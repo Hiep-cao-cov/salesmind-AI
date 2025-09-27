@@ -1,21 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Competency Dashboard</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Bootstrap + FontAwesome + Chart.js + PapaParse -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
   <script src="https://kit.fontawesome.com/a2d9d6ef5c.js" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
   <style>
     body { font-family: Inter, sans-serif; background:#f5f7fa; }
-    .sidebar { height:100vh; background:linear-gradient(180deg,#667eea,#764ba2); color:#fff; padding:20px; }
-    .sidebar h3 { font-weight:700; margin-bottom:30px; }
-    .sidebar a { display:block; padding:10px; color:#fff; text-decoration:none; margin-bottom:6px; border-radius:6px; }
+    .sidebar { height: 100vh; background: linear-gradient(180deg,#667eea,#764ba2); color: #fff; padding: 20px; }
+    .sidebar h3 { font-weight:700; margin-bottom:24px; }
+    .sidebar a { display:block; padding:10px; color:#fff; text-decoration:none; margin-bottom:6px; border-radius:6px; cursor:pointer; }
     .sidebar a:hover, .sidebar a.active { background: rgba(255,255,255,0.2); }
+    .sidebar .submenu { margin-left:15px; font-size: 0.9em; }
     .main-panel { background:#fff; padding:20px; height:100vh; overflow-y:auto; }
-    .goal-card { background:linear-gradient(135deg,#4facfe,#00f2fe); color:#fff; padding:18px; border-radius:10px;
-                 margin-bottom:12px; box-shadow:0 4px 12px rgba(0,0,0,0.1); cursor:pointer; transition:transform .1s ease; }
+    .goal-card { background: linear-gradient(135deg,#4facfe,#00f2fe); color:#fff; padding:18px; border-radius:10px;
+                 margin-bottom:12px; box-shadow:0 4px 12px rgba(0,0,0,0.1); cursor:pointer; transition:transform 0.1s ease; }
     .goal-card:hover { transform: scale(1.02); }
     .detail-panel { background:#fdfdfd; padding:20px; height:100vh; overflow-y:auto; border-left:1px solid #ddd; }
     .badge-strong { background:#28a745; }
@@ -28,9 +33,13 @@
 <div class="container-fluid">
   <div class="row">
     <!-- Sidebar -->
-    <div class="col-2 sidebar">
+    <div class="col-12 col-md-2 sidebar">
       <h3><i class="fas fa-user-graduate"></i> SalesMind</h3>
-      <a href="#" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+      <a id="navDashboard" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+      <div class="submenu">
+        <a id="navAll"><i class="fas fa-users"></i> Show All Users</a>
+        <a id="navSingle"><i class="fas fa-user"></i> Select User</a>
+      </div>
       <a href="#"><i class="fas fa-tasks"></i> Assessments</a>
       <a href="#"><i class="fas fa-brain"></i> Competencies</a>
       <a href="#"><i class="fas fa-users"></i> Roles</a>
@@ -42,10 +51,9 @@
     </div>
 
     <!-- Main Panel -->
-    <div class="col-6 main-panel">
-      <h4>My Assessments</h4>
-      <button class="btn btn-primary btn-sm mb-3" onclick="renderAllCards()">Show All Users</button>
-      <div class="mb-3">
+    <div class="col-12 col-md-6 main-panel">
+      <h4 id="mainTitle">My Assessments</h4>
+      <div id="userSelectBox" class="mb-3" style="display:none;">
         <label class="form-label">Select User</label>
         <select id="userSelect" class="form-select form-select-sm" onchange="renderSingleCard()">
           <option value="">-- Choose a user --</option>
@@ -55,16 +63,17 @@
     </div>
 
     <!-- Detail Panel -->
-    <div class="col-4 detail-panel">
-      <div class="profile-card">
+    <div class="col-12 col-md-4 detail-panel">
+      <div class="mb-2">
         <h5 id="profileName">Select a user</h5>
-        <p id="profileRole" class="text-muted"></p>
+        <p id="profileRole" class="text-muted mb-0"></p>
       </div>
-      <h6>Overall Progress</h6>
-      <canvas id="progressCircle" height="150"></canvas>
+      <!-- Ratings table first -->
+      <div id="ratingsTable" class="mt-3"></div>
+      <!-- Radar chart below ratings -->
       <h6 class="mt-4">Competency Radar</h6>
       <canvas id="radarChart" height="200"></canvas>
-      <div id="ratingsTable" class="mt-3"></div>
+      <!-- Development plan -->
       <h6 class="mt-4">Development Plan</h6>
       <ul id="taskList" class="list-group"></ul>
     </div>
@@ -72,10 +81,12 @@
 </div>
 
 <script>
+/* === Global Data === */
 let people=[], ratings=[], competencies={}, roles=[], details=[];
-let progressChart, radarChart;
+let radarChart;
+let currentMode="all"; // default mode
 
-/* ===== CSV Loader (PapaParse) ===== */
+/* === CSV Loader === */
 function parseCSV(path, cb){
   Papa.parse(path, {
     download: true,
@@ -86,7 +97,7 @@ function parseCSV(path, cb){
   });
 }
 
-/* ===== Load all data ===== */
+/* === Load Data === */
 function loadAllData(){
   parseCSV("data/people.csv", rows=>{
     people = rows.map(r=>({
@@ -96,21 +107,20 @@ function loadAllData(){
       score: parseInt(r["overall_score"])
     }));
     populateUserSelect();
-    console.log("People:", people);
+    renderMainPanel();
   });
 
   parseCSV("data/ratings.csv", rows=>{
     ratings = rows.map(r=>({
       person_id: String(r["person_id"]).trim(),
-      competency: String(r["competency"]).trim(),
+      competency: String(r["competency"]).trim().toLowerCase(),
       rating: String(r["rating"]).trim()
     }));
-    console.log("Ratings:", ratings);
   });
 
   parseCSV("data/competencies.csv", rows=>{
     rows.forEach(r=>{
-      competencies[r["competency"].trim()] = {
+      competencies[r["competency"].trim().toLowerCase()] = {
         Developing: r["Developing"].trim(),
         Capability: r["Capability"].trim(),
         Strong: r["Strong"].trim()
@@ -121,7 +131,7 @@ function loadAllData(){
   parseCSV("data/role_profiles.csv", rows=>{
     roles = rows.map(r=>({
       role: String(r["role"]).trim(),
-      competency: String(r["competency"]).trim(),
+      competency: String(r["competency"]).trim().toLowerCase(),
       expected: String(r["expected"]).trim()
     }));
   });
@@ -129,14 +139,14 @@ function loadAllData(){
   parseCSV("data/rating_details.csv", rows=>{
     details = rows.map(r=>({
       person_id: String(r["person_id"]).trim(),
-      competency: String(r["competency"]).trim(),
+      competency: String(r["competency"]).trim().toLowerCase(),
       rating: String(r["rating"]).trim(),
       detail: r["detail"] ? r["detail"].trim() : ""
     }));
   });
 }
 
-/* ===== UI ===== */
+/* === UI Functions === */
 function populateUserSelect(){
   const select=document.getElementById("userSelect");
   select.innerHTML='<option value="">-- Choose a user --</option>';
@@ -145,17 +155,26 @@ function populateUserSelect(){
   });
 }
 
-function renderAllCards(){
+function renderMainPanel(){
   const container=document.getElementById("cardsContainer");
+  const selectBox=document.getElementById("userSelectBox");
   container.innerHTML="";
-  people.forEach(p=>{
-    container.innerHTML+=`
-      <div class="goal-card" onclick="showDetails('${p.person_id}')">
-        <h5>${p.name} – ${p.role}</h5>
-        <p>Overall Score: <strong>${p.score}%</strong></p>
-        <small>Click to view details</small>
-      </div>`;
-  });
+
+  if(currentMode==="all"){
+    document.getElementById("mainTitle").innerText="All Users";
+    selectBox.style.display="none";
+    people.forEach(p=>{
+      container.innerHTML+=`
+        <div class="goal-card" onclick="showDetails('${p.person_id}')">
+          <h5>${p.name} – ${p.role}</h5>
+          <p>Overall Score: <strong>${p.score}%</strong></p>
+          <small>Click to view details</small>
+        </div>`;
+    });
+  } else if(currentMode==="single"){
+    document.getElementById("mainTitle").innerText="Select User";
+    selectBox.style.display="block";
+  }
 }
 
 function renderSingleCard(){
@@ -174,36 +193,61 @@ function renderSingleCard(){
   }
 }
 
+/* === Sidebar Navigation === */
+document.getElementById("navAll").onclick=()=>{
+  currentMode="all";
+  renderMainPanel();
+};
+document.getElementById("navSingle").onclick=()=>{
+  currentMode="single";
+  renderMainPanel();
+};
+
+/* === Helpers === */
+function badgeClass(r){
+  if(r==="Strong") return "badge-strong";
+  if(r==="Capability") return "badge-capability";
+  if(r==="Developing") return "badge-developing";
+  return "badge-none";
+}
+
+/* === Show Details Panel === */
 function showDetails(pid){
   const person=people.find(p=>p.person_id===pid);
   const actualRatings=ratings.filter(r=>r.person_id===pid);
   const expectedRatings=roles.filter(r=>r.role===person.role);
   const userDetails=details.filter(d=>d.person_id===pid);
 
-  console.log("Showing details for", person.name);
-  console.log("Actual:", actualRatings);
-
   document.getElementById("profileName").innerText=person.name;
   document.getElementById("profileRole").innerText=person.role;
 
-  // Progress circle
-  if(progressChart) progressChart.destroy();
-  progressChart=new Chart(document.getElementById("progressCircle"),{
-    type:"doughnut",
-    data:{datasets:[{data:[person.score,100-person.score],backgroundColor:["#667eea","#eee"]}]},
-    options:{cutout:"70%",plugins:{legend:{display:false}}}
+  // Ratings table
+  let ratingsHtml = `<table class="table table-sm mt-3"><thead><tr><th>Competency</th><th>Actual</th><th>Expected</th></tr></thead><tbody>`;
+  const mapping={"Developing":1,"Capability":2,"Strong":3};
+  let labels=[...new Set([
+    ...actualRatings.map(r=>r.competency),
+    ...expectedRatings.map(r=>r.competency)
+  ])];
+  labels.forEach(label=>{
+    let actual = actualRatings.find(r=>r.competency===label.toLowerCase())?.rating || "None";
+    let expected = expectedRatings.find(r=>r.competency===label.toLowerCase())?.expected || "None";
+    ratingsHtml+=`
+      <tr>
+        <td>${label}</td>
+        <td><span class="badge ${badgeClass(actual)}">${actual}</span></td>
+        <td><span class="badge ${badgeClass(expected)}">${expected}</span></td>
+      </tr>`;
   });
+  ratingsHtml+="</tbody></table>";
+  document.getElementById("ratingsTable").innerHTML=ratingsHtml;
 
   // Radar chart
-  const mapping={"Developing":1,"Capability":2,"Strong":3};
-  let labels=[...new Set([...actualRatings.map(r=>r.competency), ...expectedRatings.map(r=>r.competency)])];
-
   let actualVals=labels.map(label=>{
-    let r=actualRatings.find(ar=>ar.competency===label);
+    let r=actualRatings.find(ar=>ar.competency===label.toLowerCase());
     return r?mapping[r.rating]:0;
   });
   let expectedVals=labels.map(label=>{
-    let e=expectedRatings.find(er=>er.competency===label);
+    let e=expectedRatings.find(er=>er.competency===label.toLowerCase());
     return e?mapping[e.expected]:0;
   });
 
@@ -216,27 +260,6 @@ function showDetails(pid){
     ]},
     options:{scales:{r:{suggestedMin:0,suggestedMax:3,ticks:{stepSize:1,callback:(v)=>['','Dev','Cap','Strong'][v]}}}}
   });
-
-  // Ratings table
-  const badgeClass = r=>{
-    if(r==="Strong") return "badge-strong";
-    if(r==="Capability") return "badge-capability";
-    if(r==="Developing") return "badge-developing";
-    return "badge-none";
-  };
-  let ratingsHtml = `<table class="table table-sm mt-3"><thead><tr><th>Competency</th><th>Actual</th><th>Expected</th></tr></thead><tbody>`;
-  labels.forEach(label=>{
-    let actual = actualRatings.find(r=>r.competency===label)?.rating || "None";
-    let expected = expectedRatings.find(r=>r.competency===label)?.expected || "None";
-    ratingsHtml+=`
-      <tr>
-        <td>${label}</td>
-        <td><span class="badge ${badgeClass(actual)}">${actual}</span></td>
-        <td><span class="badge ${badgeClass(expected)}">${expected}</span></td>
-      </tr>`;
-  });
-  ratingsHtml+="</tbody></table>";
-  document.getElementById("ratingsTable").innerHTML=ratingsHtml;
 
   // Development plan
   const taskList=document.getElementById("taskList");
