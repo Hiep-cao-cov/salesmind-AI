@@ -27,6 +27,10 @@
     .detail-panel { background:#fdfdfd; padding:20px; height:100vh; overflow-y:auto; border-left:1px solid #ddd; }
     .profile-card { text-align:center; margin-bottom:20px; }
     .task-done { text-decoration:line-through; color:#888; }
+    .badge-strong { background:#28a745; }
+    .badge-capability { background:#0d6efd; }
+    .badge-developing { background:#ffc107; color:#000; }
+    .badge-none { background:#6c757d; }
   </style>
 </head>
 <body>
@@ -55,7 +59,6 @@
     <!-- Detail Panel -->
     <div class="col-4 detail-panel">
       <div class="profile-card">
-        <!-- Removed profile picture -->
         <h5 id="profileName">Select a user</h5>
         <p id="profileRole" class="text-muted"></p>
       </div>
@@ -65,6 +68,8 @@
 
       <h6 class="mt-4">Competency Radar</h6>
       <canvas id="radarChart" height="200"></canvas>
+
+      <div id="ratingsTable" class="mt-3"></div>
 
       <h6 class="mt-4">Development Plan</h6>
       <ul id="taskList" class="list-group"></ul>
@@ -140,8 +145,6 @@ function showDetails(pid){
 
   // Radar chart (fix alignment)
   const mapping={"Developing":1,"Capability":2,"Strong":3};
-
-  // Collect all competency labels (union of actual + expected)
   let labels=[...new Set([...actualRatings.map(r=>r.competency), ...expectedRatings.map(r=>r.competency)])];
 
   let actualVals=labels.map(label=>{
@@ -163,6 +166,27 @@ function showDetails(pid){
     options:{scales:{r:{suggestedMin:0,suggestedMax:3,ticks:{stepSize:1,callback:(v)=>['','Dev','Cap','Strong'][v]}}}}
   });
 
+  // Ratings table with colored badges
+  const badgeClass = r=>{
+    if(r==="Strong") return "badge-strong";
+    if(r==="Capability") return "badge-capability";
+    if(r==="Developing") return "badge-developing";
+    return "badge-none";
+  };
+  let ratingsHtml = `<table class="table table-sm mt-3"><thead><tr><th>Competency</th><th>Actual</th><th>Expected</th></tr></thead><tbody>`;
+  labels.forEach(label=>{
+    let actual = actualRatings.find(r=>r.competency===label)?.rating || "None";
+    let expected = expectedRatings.find(r=>r.competency===label)?.expected || "None";
+    ratingsHtml+=`
+      <tr>
+        <td>${label}</td>
+        <td><span class="badge ${badgeClass(actual)}">${actual}</span></td>
+        <td><span class="badge ${badgeClass(expected)}">${expected}</span></td>
+      </tr>`;
+  });
+  ratingsHtml+="</tbody></table>";
+  document.getElementById("ratingsTable").innerHTML=ratingsHtml;
+
   // Tasks
   const taskList=document.getElementById("taskList");
   taskList.innerHTML="";
@@ -173,4 +197,3 @@ function showDetails(pid){
 </script>
 </body>
 </html>
-
