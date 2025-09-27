@@ -1,0 +1,51 @@
+rating_id,person_id,competency,rating
+1,1,Market & Data Analytics Intelligence,Developing
+2,1,Digital & AI Proficiency,Developing
+3,1,Strategic Customer Development,Capability
+4,1,Value Solution Design & Optimization,Strong
+5,1,Strategic Relationship Management,Developing
+6,1,Advanced Communication & Negotiation,Strong
+7,1,AI Solution Development,Strong
+8,1,Data Analytics & Interpretation,Developing
+9,1,Strategic Planning,Strong
+10,1,Team Leadership,Developing
+11,2,Market & Data Analytics Intelligence,Capability
+12,2,Digital & AI Proficiency,Strong
+13,2,Strategic Customer Development,Developing
+14,2,Value Solution Design & Optimization,Developing
+15,2,Strategic Relationship Management,Strong
+16,2,Advanced Communication & Negotiation,Strong
+17,2,AI Solution Development,Strong
+18,2,Data Analytics & Interpretation,Strong
+19,2,Strategic Planning,Strong
+20,2,Team Leadership,Capability
+21,3,Market & Data Analytics Intelligence,Capability
+22,3,Digital & AI Proficiency,Capability
+23,3,Strategic Customer Development,Capability
+24,3,Value Solution Design & Optimization,Strong
+25,3,Strategic Relationship Management,Developing
+26,3,Advanced Communication & Negotiation,Developing
+27,3,AI Solution Development,Strong
+28,3,Data Analytics & Interpretation,Capability
+29,3,Strategic Planning,Strong
+30,3,Team Leadership,Strong
+31,4,Market & Data Analytics Intelligence,Developing
+32,4,Digital & AI Proficiency,Capability
+33,4,Strategic Customer Development,Capability
+34,4,Value Solution Design & Optimization,Developing
+35,4,Strategic Relationship Management,Strong
+36,4,Advanced Communication & Negotiation,Capability
+37,4,AI Solution Development,Developing
+38,4,Data Analytics & Interpretation,Capability
+39,4,Strategic Planning,Developing
+40,4,Team Leadership,Developing
+41,5,Market & Data Analytics Intelligence,Strong
+42,5,Digital & AI Proficiency,Strong
+43,5,Strategic Customer Development,Strong
+44,5,Value Solution Design & Optimization,Strong
+45,5,Strategic Relationship Management,Strong
+46,5,Advanced Communication & Negotiation,Strong
+47,5,AI Solution Development,Strong
+48,5,Data Analytics & Interpretation,Developing
+49,5,Strategic Planning,Developing
+50,5,Team Leadership,Capability

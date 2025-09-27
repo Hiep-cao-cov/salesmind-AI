@@ -1,0 +1,181 @@
+competency,level,item_id,item_text
+ Market & Data Analytics Intelligence,Developing,C1D1,Demonstrates basic understanding of market data collection methods
+ Market & Data Analytics Intelligence,Developing,C1D2,Tracks standard industry information and basic market trends
+ Market & Data Analytics Intelligence,Developing,C1D3,Performs simple data analysis using established templates and tools
+ Market & Data Analytics Intelligence,Developing,C1D4,Identifies obvious patterns in market and customer data
+ Market & Data Analytics Intelligence,Developing,C1D5,Recognizes the connection between data insights and business decisions
+ Market & Data Analytics Intelligence,Developing,C1D6,Seeks guidance when interpreting complex market signals
+ Market & Data Analytics Intelligence,Capability,C1C1,Independently collects and verifies market intelligence from multiple sources
+ Market & Data Analytics Intelligence,Capability,C1C2,"Analyzes industrial chain dynamics, capacity trends, and price movements"
+ Market & Data Analytics Intelligence,Capability,C1C3,Identifies potential business opportunities in market segments
+ Market & Data Analytics Intelligence,Capability,C1C4,Conducts multi-channel verification of competitor strategies and market changes
+ Market & Data Analytics Intelligence,Capability,C1C5,Makes data-driven recommendations based on market analysis
+ Market & Data Analytics Intelligence,Capability,C1C6,Effectively communicates insights to stakeholders and influences decisions
+ Market & Data Analytics Intelligence,Strong,C1T1,Develops sophisticated methodologies for market intelligence gathering
+ Market & Data Analytics Intelligence,Strong,C1T2,Predicts market evolution and competitive landscape changes with high accuracy
+ Market & Data Analytics Intelligence,Strong,C1T3,Identifies non-obvious correlations between market factors and business outcomes
+ Market & Data Analytics Intelligence,Strong,C1T4,Translates complex data patterns into strategic business opportunities
+ Market & Data Analytics Intelligence,Strong,C1T5,Influences senior management decisions with compelling market insights
+ Market & Data Analytics Intelligence,Strong,C1T6,Creates frameworks that enable others to better analyze and interpret market data
+Digital & AI Proficiency,Developing,C2D1,Demonstrates basic understanding of digital tools and AI applications in sales
+Digital & AI Proficiency,Developing,C2D2,Uses standard digital platforms for routine sales activities
+Digital & AI Proficiency,Developing,C2D3,Accurately inputs business data into digital systems
+Digital & AI Proficiency,Developing,C2D4,Follows established digital processes and workflows
+Digital & AI Proficiency,Developing,C2D5,Shows interest in learning new digital capabilities
+Digital & AI Proficiency,Developing,C2D6,Recognizes the potential value of AI in sales processes
+Digital & AI Proficiency,Capability,C2C1,Independently selects and applies appropriate digital tools for different sales scenarios
+Digital & AI Proficiency,Capability,C2C2,Understands customers' digital application planning in their business processes
+Digital & AI Proficiency,Capability,C2C3,Identifies suitable customers for digital pilot opportunities
+Digital & AI Proficiency,Capability,C2C4,Evaluates sales processes and results using system data
+Digital & AI Proficiency,Capability,C2C5,Coaches customers on digital platform usage
+Digital & AI Proficiency,Capability,C2C6,Provides feedback for digital system improvements
+Digital & AI Proficiency,Strong,C2T1,Proactively explores and benchmarks different digital application strategies
+Digital & AI Proficiency,Strong,C2T2,Develops innovative approaches to integrate AI into sales processes
+Digital & AI Proficiency,Strong,C2T3,Guides customers to adopt company's digital solutions
+Digital & AI Proficiency,Strong,C2T4,Conducts sophisticated data analysis to discover correlations among customer groups
+Digital & AI Proficiency,Strong,C2T5,"Actively communicates ""customer-centric"" design concepts with relevant departments"
+Digital & AI Proficiency,Strong,C2T6,Leads digital transformation initiatives that create competitive advantage
+Strategic Customer Development,Developing,C3D1,Develops business opportunities in familiar areas
+Strategic Customer Development,Developing,C3D2,Formulates basic solutions to serve customers' specific projects
+Strategic Customer Development,Developing,C3D3,Understands partial project information of customers
+Strategic Customer Development,Developing,C3D4,Solves routine problems in regular business environments
+Strategic Customer Development,Developing,C3D5,Follows established approaches for customer development
+Strategic Customer Development,Developing,C3D6,Shows awareness of company strategy in business development activities
+Strategic Customer Development,Capability,C3C1,Actively develops new customers or integrates new solutions for existing customers
+Strategic Customer Development,Capability,C3C2,Aligns business development with company strategy
+Strategic Customer Development,Capability,C3C3,Explores customers' short-term and long-term project opportunities
+Strategic Customer Development,Capability,C3C4,Makes agile adjustments when customers or industries undergo changes
+Strategic Customer Development,Capability,C3C5,Utilizes backup plans to achieve business objectives
+Strategic Customer Development,Capability,C3C6,Builds comprehensive business pipelines with growth potential
+Strategic Customer Development,Strong,C3T1,Captures new business transformation trends and proactively seizes opportunities
+Strategic Customer Development,Strong,C3T2,Conducts pioneering expansion in new industries and applications
+Strategic Customer Development,Strong,C3T3,Constructs innovative business pipelines combining short-term and long-term approaches
+Strategic Customer Development,Strong,C3T4,Balances risks and benefits in strategic decision-making
+Strategic Customer Development,Strong,C3T5,Provides reference for business units to formulate strategies
+Strategic Customer Development,Strong,C3T6,Anticipates market changes and positions the organization advantageously
+Value Solution Design & Optimization,Developing,C4D1,Demonstrates basic understanding of customer needs and pain points
+Value Solution Design & Optimization,Developing,C4D2,Creates standard solutions based on established templates
+Value Solution Design & Optimization,Developing,C4D3,Extracts solution value but may lack customer perspective
+Value Solution Design & Optimization,Developing,C4D4,Identifies obvious touchpoints in the customer journey
+Value Solution Design & Optimization,Developing,C4D5,Collects basic customer feedback on solutions
+Value Solution Design & Optimization,Developing,C4D6,Shows awareness of the importance of customer experience
+Value Solution Design & Optimization,Capability,C4C1,Collects and verifies customer needs through multiple channels
+Value Solution Design & Optimization,Capability,C4C2,"Understands positioning, volume, milestones, and challenges of customers' key projects"
+Value Solution Design & Optimization,Capability,C4C3,Aligns customer needs with company product advantages
+Value Solution Design & Optimization,Capability,C4C4,Analyzes solution value from the customer's perspective with ROI evidence
+Value Solution Design & Optimization,Capability,C4C5,Maps customer journeys to identify improvement opportunities
+Value Solution Design & Optimization,Capability,C4C6,Implements personalized experiences based on customer data
+Value Solution Design & Optimization,Strong,C4T1,Penetrates key customer groups to discover pain points at various value chain levels
+Value Solution Design & Optimization,Strong,C4T2,Deeply explores customer needs and guides demand transformation
+Value Solution Design & Optimization,Strong,C4T3,Uses creative solutions to change competitive landscape
+Value Solution Design & Optimization,Strong,C4T4,Extracts solution value and ROI evidence based on customer business drivers
+Value Solution Design & Optimization,Strong,C4T5,Helps key decision-makers gain new insights through solution design
+Value Solution Design & Optimization,Strong,C4T6,Creates adaptive experiences that evolve with changing customer needs
+Strategic Relationship Management,Developing,C5D1,Achieves partial customer coverage
+Strategic Relationship Management,Developing,C5D2,"Identifies project initiators, users, influencers, and decision-makers"
+Strategic Relationship Management,Developing,C5D3,Establishes basic relationships with customer contacts
+Strategic Relationship Management,Developing,C5D4,Maintains regular communication with established contacts
+Strategic Relationship Management,Developing,C5D5,Recognizes the importance of stakeholder management
+Strategic Relationship Management,Developing,C5D6,Shows awareness of customer decision-making processes
+Strategic Relationship Management,Capability,C5C1,Establishes regular communication with key decision-making groups
+Strategic Relationship Management,Capability,C5C2,Ranks decision-making influence of relevant customers
+Strategic Relationship Management,Capability,C5C3,Understands needs and tendencies of key decision-makers
+Strategic Relationship Management,Capability,C5C4,Collects information from multiple sources about project status
+Strategic Relationship Management,Capability,C5C5,Identifies key figures for breakthrough and drives sales process
+Strategic Relationship Management,Capability,C5C6,Builds matrix coverage relationships for thorough information collection
+Strategic Relationship Management,Strong,C5T1,Understands internal power structures and potential changes within customer organizations 
+Strategic Relationship Management,Strong,C5T2,Uses various methods to identify customer camps and decision-making tendencies
+Strategic Relationship Management,Strong,C5T3,Provides reliable analysis of project position and status in purchasing process
+Strategic Relationship Management,Strong,C5T4,Selects breakthrough strategies based on characteristics of key decision-makers
+Strategic Relationship Management,Strong,C5T5,Strategically drives the sales process through relationship leverage
+Strategic Relationship Management,Strong,C5T6,Coaches team members on customer relationship building and stakeholder analysis
+Advanced Communication & Negotiation,Developing,C6D1,Expresses personal viewpoints but may talk more than listen
+Advanced Communication & Negotiation,Developing,C6D2,Prepares basic communication with unclear objectives or strategies
+Advanced Communication & Negotiation,Developing,C6D3,Conducts standard negotiations following established templates
+Advanced Communication & Negotiation,Developing,C6D4,Recognizes basic negotiation tactics but struggles to counter them
+Advanced Communication & Negotiation,Developing,C6D5,Shows awareness of the importance of preparation for negotiations
+Advanced Communication & Negotiation,Developing,C6D6,May ignore other party's needs and concerns during communication
+Advanced Communication & Negotiation,Capability,C6C1,Prepares communication based on focus points of the target audience
+Advanced Communication & Negotiation,Capability,C6C2,Clearly and concisely initiates conversations with logical structure
+Advanced Communication & Negotiation,Capability,C6C3,Uses empathy for listening and open-ended questions to trigger discussions
+Advanced Communication & Negotiation,Capability,C6C4,Identifies doubts and objections and provides objective evidence
+Advanced Communication & Negotiation,Capability,C6C5,Evaluates achievement of communication objectives
+Advanced Communication & Negotiation,Capability,C6C6,Sets follow-up plans for next steps after negotiations
+Advanced Communication & Negotiation,Strong,C6T1,"Strategically selects appropriate occasions, methods, and frequency for communication"
+Advanced Communication & Negotiation,Strong,C6T2,Prepares content based on focus points and potential concerns of the audience
+Advanced Communication & Negotiation,Strong,C6T3,Uses guided conversations to explore deep needs and thoughts
+Advanced Communication & Negotiation,Strong,C6T4,Constructively expresses different viewpoints that benefit the other party
+Advanced Communication & Negotiation,Strong,C6T5,Grasps needs of both parties and guides joint decision-making
+Advanced Communication & Negotiation,Strong,C6T6,Wins commitment to action through masterful communication and negotiation
+AI Solution Development,Developing,C7D1,Demonstrates basic understanding of AI applications in sales
+AI Solution Development,Developing,C7D2,Uses pre-built AI tools with guidance
+AI Solution Development,Developing,C7D3,Recognizes potential use cases for AI in sales processes
+AI Solution Development,Developing,C7D4,Provides basic feedback on AI tool functionality
+AI Solution Development,Developing,C7D5,Shows interest in learning about AI capabilities
+AI Solution Development,Developing,C7D6,Follows established protocols for AI implementation
+AI Solution Development,Capability,C7C1,Identifies specific sales processes that could benefit from AI 
+AI Solution Development,Capability,C7C2,Enhancement Collaborates effectively with data scientists and IT specialists
+AI Solution Development,Capability,C7C3,Tests and validates AI solutions in real-world sales scenarios
+AI Solution Development,Capability,C7C4,Provides detailed feedback for AI tool optimization
+AI Solution Development,Capability,C7C5,Trains colleagues on basic AI tool usage
+AI Solution Development,Capability,C7C6,Integrates AI tools into existing sales workflows
+AI Solution Development,Strong,C7T1,Develops comprehensive vision for AI integration in sales strategy
+AI Solution Development,Strong,C7T2,Designs innovative AI solutions that address complex sales challenges
+AI Solution Development,Strong,C7T3,Leads cross-functional teams in AI tool development and implementation
+AI Solution Development,Strong,C7T4,Creates frameworks for measuring AI solution effectiveness
+AI Solution Development,Strong,C7T5,Promotes AI adoption across the organization through compelling demonstrations
+AI Solution Development,Strong,C7T6,Continuously optimizes AI solutions based on performance analytics and user feedback
+Data Analytics & Interpretation,Developing,C8D1,Performs basic data collection and organization
+Data Analytics & Interpretation,Developing,C8D2,Uses standard analytical tools and templates
+Data Analytics & Interpretation,Developing,C8D3,Creates simple reports with descriptive statistics
+Data Analytics & Interpretation,Developing,C8D4,Identifies obvious patterns in structured data
+Data Analytics & Interpretation,Developing,C8D5,Follows established data analysis protocols
+Data Analytics & Interpretation,Developing,C8D6,Recognizes the importance of data accuracy
+Data Analytics & Interpretation,Capability,C8C1,Independently designs data collection methodologies
+Data Analytics & Interpretation,Capability,C8C2,Applies appropriate analytical techniques for different data types
+Data Analytics & Interpretation,Capability,C8C3,Identifies meaningful patterns and correlations in complex datasets
+Data Analytics & Interpretation,Capability,C8C4,Translates analytical findings into actionable recommendations
+Data Analytics & Interpretation,Capability,C8C5,Evaluates data quality and addresses inconsistencies
+Data Analytics & Interpretation,Capability,C8C6,Effectively communicates insights to non-technical stakeholders
+Data Analytics & Interpretation,Strong,C8T1,Develops sophisticated analytical frameworks and methodologies
+Data Analytics & Interpretation,Strong,C8T2,Integrates diverse data sources to create comprehensive insights
+Data Analytics & Interpretation,Strong,C8T3,Identifies non-obvious correlations and predictive patterns
+Data Analytics & Interpretation,Strong,C8T4,Creates data visualization that tells compelling business stories
+Data Analytics & Interpretation,Strong,C8T5,Leads data-driven decision-making processes
+Data Analytics & Interpretation,Strong,C8T6,Mentors others in advanced analytical techniques and interpretation
+Strategic Planning,Developing,C9D1,Creates basic plans following established templates
+Strategic Planning,Developing,C9D2,Understands fundamental strategic planning concepts
+Strategic Planning,Developing,C9D3,Identifies obvious risks and opportunities
+Strategic Planning,Developing,C9D4,Aligns activities with stated organizational goals
+Strategic Planning,Developing,C9D5,Participates in planning processes with guidance
+Strategic Planning,Developing,C9D6,Shows awareness of how plans connect to business objectives
+Strategic Planning,Capability,C9C1,Independently develops comprehensive plans with clear objectives
+Strategic Planning,Capability,C9C2,Incorporates market intelligence into planning process
+Strategic Planning,Capability,C9C3,Identifies non-obvious risks and develops mitigation strategies
+Strategic Planning,Capability,C9C4,Allocates resources effectively to support strategic priorities
+Strategic Planning,Capability,C9C5,Establishes meaningful metrics to track plan effectiveness
+Strategic Planning,Capability,C9C6,Adjusts plans based on changing market conditions
+Strategic Planning,Strong,C9T1,Creates innovative strategic frameworks that drive competitive advantage
+Strategic Planning,Strong,C9T2,Anticipates market shifts and positions organization advantageously
+Strategic Planning,Strong,C9T3,Develops sophisticated scenario planning for multiple contingencies
+Strategic Planning,Strong,C9T4,Optimizes resource allocation across complex business portfolios
+Strategic Planning,Strong,C9T5,Influences organizational direction through compelling strategic vision
+Strategic Planning,Strong,C9T6,Mentors others in strategic thinking and planning methodologies
+Team Leadership,Developing,C10D1,Provides basic direction and guidance to team members
+Team Leadership,Developing,C10D2,Assigns tasks and monitors completion
+Team Leadership,Developing,C10D3,Communicates expectations for performance
+Team Leadership,Developing,C10D4,Recognizes team achievements
+Team Leadership,Developing,C10D5,Shows awareness of different leadership styles
+Team Leadership,Developing,C10D6,Addresses obvious performance issues
+Team Leadership,Capability,C10C1,Creates clear team goals aligned with organizational objectives
+Team Leadership,Capability,C10C2,Delegates effectively based on team member strengths
+Team Leadership,Capability,C10C3,Provides constructive feedback and coaching
+Team Leadership,Capability,C10C4,Facilitates effective team communication and collaboration
+Team Leadership,Capability,C10C5,Resolves conflicts and builds team cohesion
+Team Leadership,Capability,C10C6,Develops team members through targeted learning opportunities
+Team Leadership,Strong,C10T1,Inspires exceptional performance through compelling vision
+Team Leadership,Strong,C10T2,Creates high-performance culture that attracts and retains talent
+Team Leadership,Strong,C10T3,Develops future leaders through mentoring and stretch assignments
+Team Leadership,Strong,C10T4,Navigates complex organizational dynamics to advocate for team
+Team Leadership,Strong,C10T5,Leads transformational change initiatives
+Team Leadership,Strong,C10T6,Creates systems that enable team success and continuous improvement

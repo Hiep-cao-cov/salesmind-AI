@@ -1,0 +1,51 @@
+detail_id,person_id,competency,rating,detail
+1,1,Market & Data Analytics Intelligence,Developing,Needs more practice in Excel
+2,1,Digital & AI Proficiency,Developing,Struggles with data analysis
+3,1,Strategic Customer Development,Capability,Can manage standard client tasks
+4,1,Value Solution Design & Optimization,Strong,Delivered excellent client report
+5,1,Strategic Relationship Management,Developing,Still learning core processes
+6,1,Advanced Communication & Negotiation,Strong,Needs more practice in Excel
+7,1,AI Solution Development,Strong,Struggles with data analysis
+8,1,Data Analytics & Interpretation,Developing,Can manage standard client tasks
+9,1,Strategic Planning,Strong,Delivered excellent client report
+10,1,Team Leadership,Developing,Still learning core processes
+11,2,Market & Data Analytics Intelligence,Capability,Needs more practice in Excel
+12,2,Digital & AI Proficiency,Strong,Struggles with data analysis
+13,2,Strategic Customer Development,Developing,Can manage standard client tasks
+14,2,Value Solution Design & Optimization,Developing,Delivered excellent client report
+15,2,Strategic Relationship Management,Strong,Still learning core processes
+16,2,Advanced Communication & Negotiation,Strong,Needs more practice in Excel
+17,2,AI Solution Development,Strong,Struggles with data analysis
+18,2,Data Analytics & Interpretation,Strong,Can manage standard client tasks
+19,2,Strategic Planning,Strong,Delivered excellent client report
+20,2,Team Leadership,Capability,Still learning core processes
+21,3,Market & Data Analytics Intelligence,Capability,Needs more practice in Excel
+22,3,Digital & AI Proficiency,Capability,Struggles with data analysis
+23,3,Strategic Customer Development,Capability,Can manage standard client tasks
+24,3,Value Solution Design & Optimization,Strong,Delivered excellent client report
+25,3,Strategic Relationship Management,Developing,Still learning core processes
+26,3,Advanced Communication & Negotiation,Developing,Needs more practice in Excel
+27,3,AI Solution Development,Strong,Struggles with data analysis
+28,3,Data Analytics & Interpretation,Capability,Can manage standard client tasks
+29,3,Strategic Planning,Strong,Delivered excellent client report
+30,3,Team Leadership,Strong,Still learning core processes
+31,4,Market & Data Analytics Intelligence,Developing,Needs more practice in Excel
+32,4,Digital & AI Proficiency,Capability,Struggles with data analysis
+33,4,Strategic Customer Development,Capability,Can manage standard client tasks
+34,4,Value Solution Design & Optimization,Developing,Delivered excellent client report
+35,4,Strategic Relationship Management,Strong,Still learning core processes
+36,4,Advanced Communication & Negotiation,Capability,Needs more practice in Excel
+37,4,AI Solution Development,Developing,Struggles with data analysis
+38,4,Data Analytics & Interpretation,Capability,Can manage standard client tasks
+39,4,Strategic Planning,Developing,Delivered excellent client report
+40,4,Team Leadership,Developing,Still learning core processes
+41,5,Market & Data Analytics Intelligence,Strong,Needs more practice in Excel
+42,5,Digital & AI Proficiency,Strong,Struggles with data analysis
+43,5,Strategic Customer Development,Strong,Can manage standard client tasks
+44,5,Value Solution Design & Optimization,Strong,Delivered excellent client report
+45,5,Strategic Relationship Management,Strong,Still learning core processes
+46,5,Advanced Communication & Negotiation,Strong,Needs more practice in Excel
+47,5,AI Solution Development,Strong,Struggles with data analysis
+48,5,Data Analytics & Interpretation,Developing,Can manage standard client tasks
+49,5,Strategic Planning,Developing,Delivered excellent client report
+50,5,Team Leadership,Capability,Still learning core processes
