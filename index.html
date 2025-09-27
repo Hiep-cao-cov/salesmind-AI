@@ -12,24 +12,45 @@
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
   <style>
-    body { font-family: Inter, sans-serif; background:#f5f7fa; }
+    body { font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif; background:#f5f7fa; }
+
+    /* Sidebar */
     .sidebar { height: 100vh; background: linear-gradient(180deg,#667eea,#764ba2); color: #fff; padding: 20px; }
     .sidebar h3 { font-weight:700; margin-bottom:24px; }
     .sidebar a { display:block; padding:10px; color:#fff; text-decoration:none; margin-bottom:6px; border-radius:6px; cursor:pointer; }
     .sidebar a:hover, .sidebar a.active { background: rgba(255,255,255,0.3); }
     .sidebar .submenu { margin-left:15px; font-size: 0.9em; }
     .sidebar .disabled { cursor: default; opacity: 0.6; }
+
+    /* Panels */
     .main-panel { background:#fff; padding:20px; height:100vh; overflow-y:auto; }
-    .goal-card { background: linear-gradient(135deg,#4facfe,#00f2fe); color:#fff; padding:18px; border-radius:10px;
-                 margin-bottom:12px; box-shadow:0 4px 12px rgba(0,0,0,0.1); cursor:pointer; transition:transform 0.1s ease; }
-    .goal-card:hover { transform: scale(1.02); }
     .detail-panel { background:#fdfdfd; padding:20px; height:100vh; overflow-y:auto; border-left:1px solid #ddd; }
+
+    /* Two-tone user cards */
+    .user-card { cursor:pointer; margin-bottom:10px; border-radius:10px; overflow:hidden; display:flex; transition:transform .1s ease, box-shadow .2s ease; }
+    .user-card:hover { transform:scale(1.01); box-shadow:0 6px 18px rgba(0,0,0,0.12); }
+    /* Fancy gradient pair: Name (left) and Role (right) */
+    .user-name  { flex:1; padding:12px 14px; font-weight:700; color:#fff; background:linear-gradient(135deg,#667eea,#764ba2); }
+    .user-role  { flex:1; padding:12px 14px; font-weight:600; color:#fff; background:linear-gradient(135deg,#43cea2,#185a9d); }
+
+    /* Competency buttons */
+    .competency-btn { margin-bottom:10px; border:none; border-radius:10px; padding:12px 14px; font-weight:700; text-align:left; color:#fff; transition:transform .1s ease, box-shadow .2s ease; }
+    .competency-btn:hover { transform:scale(1.01); box-shadow:0 6px 18px rgba(0,0,0,0.15); }
+
+    /* Badges for ratings */
     .badge-strong { background:#28a745; }
     .badge-capability { background:#0d6efd; }
     .badge-developing { background:#ffc107; color:#000; }
     .badge-none { background:#6c757d; }
-    .competency-btn { margin-bottom:8px; border:none; border-radius:8px; padding:12px; font-weight:600; text-align:left; }
-    .competency-btn:hover { transform:scale(1.02); box-shadow:0 4px 10px rgba(0,0,0,0.15); }
+
+    /* Fancy table styles */
+    .table-wrap { border-radius:12px; overflow:hidden; box-shadow:0 6px 18px rgba(0,0,0,0.06); }
+    .table thead th { background:linear-gradient(135deg,#36d1dc,#5b86e5); color:#fff; border:none; }
+    .table tbody tr:hover { background: #f7fbff; }
+    .table td, .table th { vertical-align: middle; }
+
+    /* Tiny helper */
+    .muted { color:#6c757d; }
   </style>
 </head>
 <body onload="loadAllData()">
@@ -43,225 +64,182 @@
         <a id="navAll"><i class="fas fa-users"></i> Show All Users</a>
         <a id="navSingle"><i class="fas fa-user"></i> Select User</a>
       </div>
-      <a id="navAssess"><i class="fas fa-tasks"></i> Assessments</a>
       <a id="navCompetencies"><i class="fas fa-brain"></i> Competencies</a>
-      <a id="navRoles"><i class="fas fa-users"></i> Roles</a>
       <a id="navReports"><i class="fas fa-chart-line"></i> Reports</a>
-      <a id="navSettings"><i class="fas fa-cog"></i> Settings</a>
     </div>
 
     <!-- Main Panel -->
     <div class="col-12 col-md-4 main-panel" id="mainPanel">
       <h4 id="mainTitle">My Assessments</h4>
+
+      <!-- Select User dropdown -->
       <div id="userSelectBox" class="mb-3" style="display:none;">
         <label class="form-label">Select User</label>
-        <select id="userSelect" class="form-select form-select-sm" onchange="renderSingleCard()">
-          <option value="">-- Choose a user --</option>
-        </select>
+        <select id="userSelect" class="form-select form-select-sm" onchange="renderSingleCard()"></select>
       </div>
+
+      <!-- Dynamic content -->
       <div id="cardsContainer"></div>
     </div>
 
-    <!-- Detail Panel -->
+    <!-- Detail Panel (with fade) -->
     <div class="col-12 col-md-6 detail-panel">
-      <div class="mb-2">
-        <h5 id="profileName">Select a user</h5>
-        <p id="profileRole" class="text-muted mb-0"></p>
+      <div id="detailContent" class="fade show">
+        <div class="mb-2">
+          <h5 id="profileName" class="muted">Select a user</h5>
+          <p id="profileRole" class="text-muted mb-0"></p>
+        </div>
+        <div id="ratingsTable" class="mt-3"></div>
+        <h6 id="radarLabel" class="mt-4">Competency Radar</h6>
+        <canvas id="radarChart" height="200"></canvas>
       </div>
-      <div id="ratingsTable" class="mt-3"></div>
-      <h6 id="radarLabel" class="mt-4">Competency Radar</h6>
-      <canvas id="radarChart" height="200"></canvas>
     </div>
   </div>
 </div>
 
 <script>
-/* === Global Data === */
+/* ======= Global State ======= */
 let people=[], ratings=[], competencies=[], roles=[], details=[];
 let radarChart;
 let currentMode="all";
-let selectedLevel="Developing";  
 let selectedCompetency=null;
 
-/* === Utility: clear detail panel === */
-function clearDetailPanel(){
-  document.getElementById("profileName").innerText="";
-  document.getElementById("profileRole").innerText="";
-  document.getElementById("ratingsTable").innerHTML="";
-  document.getElementById("radarChart").style.display="none";
-  document.getElementById("radarLabel").style.display="none";
-  if(radarChart) radarChart.destroy();
-}
-
-/* === CSV Loader === */
 function parseCSV(path, cb){
-  Papa.parse(path, {
-    download: true, header: true, skipEmptyLines: true,
-    complete: (res) => cb(res.data),
-    error: (err) => console.error("Error loading", path, err)
-  });
+  Papa.parse(path,{download:true,header:true,skipEmptyLines:true,complete:(res)=>cb(res.data)});
 }
 
 function loadAllData(){
   parseCSV("data/people.csv", rows=>{
-    people = rows.map(r=>({
-      person_id: String(r["person_id"]).trim(),
-      name: String(r["name"]).trim(),
-      role: String(r["role/job"]).trim(),
-      score: parseInt(r["overall_score"])
-    }));
+    people = rows.map(r=>({person_id:r["person_id"].trim(),name:r["name"].trim(),role:r["role/job"].trim(),score:parseInt(r["overall_score"])}));
     populateUserSelect();
-    renderMainPanel();
+    renderAllUsers(); // default
   });
-
   parseCSV("data/ratings.csv", rows=>{
-    ratings = rows.map(r=>({
-      person_id: String(r["person_id"]).trim(),
-      competency: String(r["competency"]).trim().toLowerCase(),
-      rating: String(r["rating"]).trim()
-    }));
+    ratings = rows.map(r=>({person_id:r["person_id"].trim(),competency:r["competency"].trim().toLowerCase(),rating:r["rating"].trim()}));
   });
-
   parseCSV("data/competencies.csv", rows=>{
-    competencies = rows.map(r=>({
-      competency: r["competency"].trim(),
-      level: r["level"].trim(),
-      item_id: r["item_id"].trim(),
-      item_text: r["item_text"].trim()
-    }));
+    competencies = rows.map(r=>({competency:r["competency"].trim(),level:r["level"].trim(),item_id:r["item_id"].trim(),item_text:r["item_text"].trim()}));
   });
-
   parseCSV("data/role_profiles.csv", rows=>{
-    roles = rows.map(r=>({
-      role: String(r["role"]).trim(),
-      competency: String(r["competency"]).trim().toLowerCase(),
-      expected: String(r["expected"]).trim()
-    }));
+    roles = rows.map(r=>({role:r["role"].trim(),competency:r["competency"].trim().toLowerCase(),expected:r["expected"].trim()}));
   });
-
   parseCSV("data/rating_details.csv", rows=>{
-    details = rows.map(r=>({
-      person_id: String(r["person_id"]).trim(),
-      competency: String(r["competency"]).trim().toLowerCase(),
-      rating: String(r["rating"]).trim(),
-      detail: r["detail"] ? r["detail"].trim() : ""
-    }));
+    details = rows.map(r=>({person_id:r["person_id"].trim(),competency:r["competency"].trim(),rating:r["rating"].trim(),detail:r["detail"]?r["detail"].trim():""}));
   });
 }
 
-/* === Sidebar Active Highlight === */
+/* ======= Sidebar Active ======= */
 function setActive(navId){
-  document.querySelectorAll(".sidebar a").forEach(a=>{
-    if(!a.classList.contains("disabled")) a.classList.remove("active");
-  });
+  document.querySelectorAll(".sidebar a").forEach(a=>{if(!a.classList.contains("disabled")) a.classList.remove("active");});
   if(navId!=="navDashboard") document.getElementById(navId).classList.add("active");
-  if(navId==="navAll"||navId==="navSingle"){ 
-    document.getElementById("navDashboard").classList.add("active"); 
-  }
-  clearDetailPanel();
+  if(navId==="navAll"||navId==="navSingle"){document.getElementById("navDashboard").classList.add("active");}
+  clearDetailPanel(true);
 }
 
-/* === UI Functions === */
+/* ======= Detail Panel Fade Helpers ======= */
+function fadeOutIn(callback){
+  const panel=document.getElementById("detailContent");
+  panel.classList.remove("show"); // fade out
+  setTimeout(()=>{ callback(); panel.classList.add("show"); }, 250); // fade in
+}
+
+function clearDetailPanel(soft=false){
+  // soft=true means we keep the fade but reset contents
+  fadeOutIn(()=>{
+    document.getElementById("profileName").innerText= soft ? "" : "Select a user";
+    document.getElementById("profileRole").innerText="";
+    document.getElementById("ratingsTable").innerHTML="";
+    document.getElementById("radarChart").style.display="none";
+    document.getElementById("radarLabel").style.display="none";
+    if(radarChart) radarChart.destroy();
+  });
+}
+
+/* ======= UI Builders ======= */
 function populateUserSelect(){
   const select=document.getElementById("userSelect");
-  select.innerHTML='<option value="">-- Choose a user --</option>';
-  people.forEach(p=>{
-    select.innerHTML+=`<option value="${p.person_id}">${p.name} – ${p.role}</option>`;
-  });
+  select.innerHTML="";
+  people.forEach((p)=>{ select.innerHTML+=`<option value="${p.person_id}">${p.name} – ${p.role}</option>`; });
 }
 
-function renderMainPanel(){
-  const container=document.getElementById("cardsContainer");
-  const selectBox=document.getElementById("userSelectBox");
-  container.innerHTML="";
-  selectBox.style.display="none";
+/* ======= Navigation Handlers ======= */
+document.getElementById("navAll").onclick=()=>{ setActive("navAll"); renderAllUsers(); };
+document.getElementById("navSingle").onclick=()=>{ setActive("navSingle"); renderSelectUser(); };
+document.getElementById("navCompetencies").onclick=()=>{ setActive("navCompetencies"); renderCompetencies(); };
+document.getElementById("navReports").onclick=()=>{ setActive("navReports"); renderReports(); };
 
-  if(currentMode==="all"){
-    document.getElementById("mainTitle").innerText="All Users";
-    people.forEach(p=>{
-      container.innerHTML+=`
-        <div class="goal-card" onclick="showDetails('${p.person_id}')">
-          <h5>${p.name} – ${p.role}</h5>
-          <p>Overall Score: <strong>${p.score}%</strong></p>
-          <small>Click to view details</small>
-        </div>`;
-    });
-  } else if(currentMode==="single"){
-    document.getElementById("mainTitle").innerText="Select User";
-    selectBox.style.display="block";
+/* ======= Views ======= */
+function renderAllUsers(){
+  currentMode="all";
+  document.getElementById("mainTitle").innerText="All Users";
+  document.getElementById("userSelectBox").style.display="none";
+  const container=document.getElementById("cardsContainer");
+  container.innerHTML="";
+
+  people.forEach(p=>{
+    container.innerHTML+=`
+      <div class="user-card" onclick="showUserSummary('${p.person_id}')">
+        <div class="user-name">${p.name}</div>
+        <div class="user-role">${p.role}</div>
+      </div>`;
+  });
+
+  if(people.length>0) showUserSummary(people[0].person_id); // auto show first user (ratings + radar)
+}
+
+function renderSelectUser(){
+  currentMode="single";
+  document.getElementById("mainTitle").innerText="Select User";
+  document.getElementById("userSelectBox").style.display="block";
+  const container=document.getElementById("cardsContainer");
+  container.innerHTML="";
+
+  // Auto select first user and render card + details table (from rating_details.csv)
+  if(people.length>0){
+    document.getElementById("userSelect").value = people[0].person_id;
+    renderSingleCard(); // also triggers detail panel (fancy table)
   }
 }
 
 function renderSingleCard(){
-  const select=document.getElementById("userSelect");
-  const pid=select.value;
+  const pid=document.getElementById("userSelect").value;
+  const p=people.find(x=>x.person_id===pid);
   const container=document.getElementById("cardsContainer");
   container.innerHTML="";
-  if(pid){
-    const p=people.find(x=>x.person_id===pid);
+  if(p){
     container.innerHTML=`
-      <div class="goal-card" onclick="showDetails('${p.person_id}')">
-        <h5>${p.name} – ${p.role}</h5>
-        <p>Overall Score: <strong>${p.score}%</strong></p>
-        <small>Click to view details</small>
+      <div class="user-card" onclick="showUserDetailsTable('${p.person_id}')">
+        <div class="user-name">${p.name}</div>
+        <div class="user-role">${p.role}</div>
       </div>`;
+    showUserDetailsTable(p.person_id); // auto show table with details (no radar)
   }
 }
 
-/* === Sidebar Navigation === */
-document.getElementById("navAll").onclick=()=>{ setActive("navAll"); currentMode="all"; renderMainPanel(); };
-document.getElementById("navSingle").onclick=()=>{ setActive("navSingle"); currentMode="single"; renderMainPanel(); };
-
-document.getElementById("navReports").onclick=()=>{
-  setActive("navReports");
-  document.getElementById("mainTitle").innerText="Reports – Development Plans";
-  document.getElementById("userSelectBox").style.display="none";
-  const container=document.getElementById("cardsContainer");
-  container.innerHTML=`
-    <label class="form-label">Select User</label>
-    <select id="reportSelect" class="form-select form-select-sm" onchange="renderReport()">
-      <option value="">-- Choose a user --</option>
-      ${people.map(p=>`<option value="${p.person_id}">${p.name}</option>`).join("")}
-    </select>
-    <ul id="reportTaskList" class="list-group mt-3"></ul>
-  `;
-};
-
-function renderReport(){
-  const pid=document.getElementById("reportSelect").value;
-  const taskList=document.getElementById("reportTaskList");
-  taskList.innerHTML="";
-  if(pid){
-    const userDetails=details.filter(d=>d.person_id===pid);
-    userDetails.forEach(d=>{
-      taskList.innerHTML+=`<li class="list-group-item"><i class="fas fa-check-circle text-success"></i> ${d.detail}</li>`;
-    });
-  }
-}
-
-// === Competencies view ===
-document.getElementById("navCompetencies").onclick=()=>{
-  setActive("navCompetencies");
+function renderCompetencies(){
+  currentMode="competencies";
   document.getElementById("mainTitle").innerText="Competencies";
   document.getElementById("userSelectBox").style.display="none";
   const container=document.getElementById("cardsContainer");
 
-  let uniqueComps=[...new Set(competencies.map(c=>c.competency))];
-  let colors=[
+  // Rotate a palette of fancy gradients
+  const gradients = [
     "linear-gradient(135deg,#667eea,#764ba2)",
     "linear-gradient(135deg,#ff9966,#ff5e62)",
     "linear-gradient(135deg,#36d1dc,#5b86e5)",
     "linear-gradient(135deg,#f7971e,#ffd200)",
-    "linear-gradient(135deg,#00b09b,#96c93d)"
+    "linear-gradient(135deg,#00b09b,#96c93d)",
+    "linear-gradient(135deg,#ec77ab,#7873f5)"
   ];
 
+  let uniqueComps=[...new Set(competencies.map(c=>c.competency))];
   let btnHtml="";
   uniqueComps.forEach((c,i)=>{
-    let style=`background:${colors[i % colors.length]};color:white;`;
+    let style=`background:${gradients[i % gradients.length]};`;
     btnHtml+=`<button class="competency-btn d-block w-100" style="${style}" onclick="selectCompetency('${c}')">${c}</button>`;
   });
 
-  container.innerHTML=`
+  container.innerHTML = `
     <div id="compButtons">${btnHtml}</div>
     <div class="mt-3">
       <label class="form-label">Select Level</label>
@@ -272,89 +250,151 @@ document.getElementById("navCompetencies").onclick=()=>{
       </select>
     </div>
   `;
-};
 
-function selectCompetency(comp){
-  selectedCompetency=comp;
-  selectedLevel=document.getElementById("levelSelect").value;
-  refreshCompetencyDetail();
+  // Clear detail panel and hide radar in competencies view
+  fadeOutIn(()=>{
+    document.getElementById("profileName").innerText="Select a competency";
+    document.getElementById("profileRole").innerText="";
+    document.getElementById("ratingsTable").innerHTML="";
+    document.getElementById("radarChart").style.display="none";
+    document.getElementById("radarLabel").style.display="none";
+    if(radarChart) radarChart.destroy();
+  });
 }
 
-function refreshCompetencyDetail(){
-  if(!selectedCompetency) return;
-  selectedLevel=document.getElementById("levelSelect").value;
-  const items=competencies.filter(c=>c.competency===selectedCompetency && c.level===selectedLevel);
-  const detailDiv=document.getElementById("ratingsTable");
-
-  document.getElementById("profileName").innerText="Competency Detail";
-  document.getElementById("profileRole").innerText=`${selectedCompetency} – ${selectedLevel}`;
-
-  if(items.length>0){
-    let html="<ul class='list-group mt-3'>";
-    items.forEach(it=>{
-      html+=`<li class="list-group-item">${it.item_text}</li>`;
-    });
-    html+="</ul>";
-    detailDiv.innerHTML=html;
-  } else {
-    detailDiv.innerHTML=`<p class="text-muted">No items found for this selection.</p>`;
-  }
+function renderReports(){
+  document.getElementById("mainTitle").innerText="Reports";
+  document.getElementById("userSelectBox").style.display="none";
+  document.getElementById("cardsContainer").innerHTML="<p class='text-muted'>Reports view coming soon.</p>";
+  clearDetailPanel();
 }
 
-/* === Helpers === */
-function badgeClass(r){
-  if(r==="Strong") return "badge-strong";
-  if(r==="Capability") return "badge-capability";
-  if(r==="Developing") return "badge-developing";
-  return "badge-none";
-}
-
-/* === Show Details Panel for Users === */
-function showDetails(pid){
-  setActive("navAll"); 
+/* ======= Detail Views ======= */
+/* Show summary (ratings table + radar) -> used in Show All Users */
+function showUserSummary(pid){
   const person=people.find(p=>p.person_id===pid);
   const actualRatings=ratings.filter(r=>r.person_id===pid);
   const expectedRatings=roles.filter(r=>r.role===person.role);
 
-  document.getElementById("profileName").innerText=person.name;
-  document.getElementById("profileRole").innerText=person.role;
-  document.getElementById("radarChart").style.display="block";
-  document.getElementById("radarLabel").style.display="block";
+  fadeOutIn(()=>{
+    document.getElementById("profileName").innerText=person.name;
+    document.getElementById("profileRole").innerText=person.role;
 
-  let ratingsHtml = `<table class="table table-sm mt-3"><thead><tr><th>Competency</th><th>Actual</th><th>Expected</th></tr></thead><tbody>`;
-  const mapping={"Developing":1,"Capability":2,"Strong":3};
-  let labels=[...new Set([...actualRatings.map(r=>r.competency), ...expectedRatings.map(r=>r.competency)])];
-  labels.forEach(label=>{
-    let actual = actualRatings.find(r=>r.competency===label.toLowerCase())?.rating || "None";
-    let expected = expectedRatings.find(r=>r.competency===label.toLowerCase())?.expected || "None";
-    ratingsHtml+=`
-      <tr>
-        <td>${label}</td>
-        <td><span class="badge ${badgeClass(actual)}">${actual}</span></td>
-        <td><span class="badge ${badgeClass(expected)}">${expected}</span></td>
-      </tr>`;
-  });
-  ratingsHtml+="</tbody></table>";
-  document.getElementById("ratingsTable").innerHTML=ratingsHtml;
+    // Build ratings table (Actual vs Expected)
+    let ratingsHtml = `<div class="table-wrap"><table class="table table-sm table-striped mb-0">
+      <thead><tr><th>Competency</th><th>Actual</th><th>Expected</th></tr></thead><tbody>`;
+    const mapping={"Developing":1,"Capability":2,"Strong":3};
+    let labels=[...new Set([...actualRatings.map(r=>r.competency), ...expectedRatings.map(r=>r.competency)])];
+    labels.forEach(label=>{
+      let actual = actualRatings.find(r=>r.competency===label.toLowerCase())?.rating || "None";
+      let expected = expectedRatings.find(r=>r.competency===label.toLowerCase())?.expected || "None";
+      ratingsHtml+=`
+        <tr>
+          <td>${label}</td>
+          <td><span class="badge ${badgeClass(actual)}">${actual}</span></td>
+          <td><span class="badge ${badgeClass(expected)}">${expected}</span></td>
+        </tr>`;
+    });
+    ratingsHtml+="</tbody></table></div>";
+    document.getElementById("ratingsTable").innerHTML=ratingsHtml;
 
-  let actualVals=labels.map(label=>{
-    let r=actualRatings.find(ar=>ar.competency===label.toLowerCase());
-    return r?mapping[r.rating]:0;
-  });
-  let expectedVals=labels.map(label=>{
-    let e=expectedRatings.find(er=>er.competency===label.toLowerCase());
-    return e?mapping[e.expected]:0;
-  });
+    // Show radar
+    document.getElementById("radarChart").style.display="block";
+    document.getElementById("radarLabel").style.display="block";
 
-  if(radarChart) radarChart.destroy();
-  radarChart=new Chart(document.getElementById("radarChart"),{
-    type:"radar",
-    data:{labels:labels,datasets:[
-      {label:"Actual",data:actualVals,fill:true,backgroundColor:"rgba(102,126,234,0.2)",borderColor:"#667eea"},
-      {label:"Expected",data:expectedVals,fill:true,backgroundColor:"rgba(244,67,54,0.2)",borderColor:"#f44336"}
-    ]},
-    options:{scales:{r:{suggestedMin:0,suggestedMax:3,ticks:{stepSize:1,callback:(v)=>['','Dev','Cap','Strong'][v]}}}}
+    let actualVals=labels.map(label=>{
+      let r=actualRatings.find(ar=>ar.competency===label.toLowerCase());
+      return r?mapping[r.rating]:0;
+    });
+    let expectedVals=labels.map(label=>{
+      let e=expectedRatings.find(er=>er.competency===label.toLowerCase());
+      return e?mapping[e.expected]:0;
+    });
+
+    if(radarChart) radarChart.destroy();
+    radarChart=new Chart(document.getElementById("radarChart"),{
+      type:"radar",
+      data:{labels:labels,datasets:[
+        {label:"Actual",data:actualVals,fill:true,backgroundColor:"rgba(102,126,234,0.2)",borderColor:"#667eea"},
+        {label:"Expected",data:expectedVals,fill:true,backgroundColor:"rgba(244,67,54,0.2)",borderColor:"#f44336"}
+      ]},
+      options:{scales:{r:{suggestedMin:0,suggestedMax:3,ticks:{stepSize:1,callback:(v)=>['','Dev','Cap','Strong'][v]}}}}
+    });
   });
+}
+
+/* Show detail table from rating_details.csv -> used in Select User mode */
+function showUserDetailsTable(pid){
+  const person=people.find(p=>p.person_id===pid);
+  const userDetails = details.filter(d=>d.person_id===pid);
+
+  fadeOutIn(()=>{
+    document.getElementById("profileName").innerText=person ? person.name : "User";
+    document.getElementById("profileRole").innerText=person ? person.role : "";
+
+    // Build fancy 3-column table: Competency | Rating | Detail
+    if(userDetails.length){
+      let html = `<div class="table-wrap"><table class="table table-sm table-hover mb-0">
+        <thead><tr>
+          <th>Competency</th>
+          <th>Rating</th>
+          <th>Detail</th>
+        </tr></thead><tbody>`;
+
+        userDetails.forEach(row=>{
+          html += `<tr>
+            <td>${row.competency}</td>
+            <td><span class="badge ${badgeClass(row.rating)}">${row.rating}</span></td>
+            <td>${row.detail || "<span class='text-muted'>—</span>"}</td>
+          </tr>`;
+        });
+
+      html += `</tbody></table></div>`;
+      document.getElementById("ratingsTable").innerHTML = html;
+    } else {
+      document.getElementById("ratingsTable").innerHTML = `<div class="text-muted">No details found for this user.</div>`;
+    }
+
+    // Hide radar in Select User detail view (as requested)
+    document.getElementById("radarChart").style.display="none";
+    document.getElementById("radarLabel").style.display="none";
+    if(radarChart) radarChart.destroy();
+  });
+}
+
+/* ======= Competency detail ======= */
+function selectCompetency(c){ selectedCompetency=c; refreshCompetencyDetail(); }
+function refreshCompetencyDetail(){
+  if(!selectedCompetency) return;
+  const level=document.getElementById("levelSelect").value;
+  const items=competencies.filter(x=>x.competency===selectedCompetency && x.level===level);
+
+  fadeOutIn(()=>{
+    document.getElementById("profileName").innerText="Competency Detail";
+    document.getElementById("profileRole").innerText=`${selectedCompetency} – ${level}`;
+
+    if(items.length>0){
+      let html="<ul class='list-group mt-3'>";
+      items.forEach(it=>{ html += `<li class="list-group-item">${it.item_text}</li>`; });
+      html+="</ul>";
+      document.getElementById("ratingsTable").innerHTML=html;
+    } else {
+      document.getElementById("ratingsTable").innerHTML=`<p class="text-muted">No items found for this selection.</p>`;
+    }
+
+    document.getElementById("radarChart").style.display="none";
+    document.getElementById("radarLabel").style.display="none";
+    if(radarChart) radarChart.destroy();
+  });
+}
+
+/* ======= Helpers ======= */
+function badgeClass(r){
+  const val = String(r).toLowerCase();
+  if(val==="strong") return "badge-strong";
+  if(val==="capability") return "badge-capability";
+  if(val==="developing") return "badge-developing";
+  return "badge-none";
 }
 </script>
 </body>
