@@ -1,101 +1,101 @@
-role/job,competency,expected,,
-Regional Sales Head,Market & Data Analytics Intelligence,Strong,,
-Regional Sales Head,Digital & AI Proficiency,Capable,,
-Regional Sales Head,Strategic Customer Development,Strong,,
-Regional Sales Head,Value Solution Design & Optimization,Strong,,
-Regional Sales Head,Strategic Relationship Management,Strong,,
-Regional Sales Head,Advanced Communication & Negotiation,Strong,,
-Regional Sales Head,AI Solution Development,Developing,,
-Regional Sales Head,Data Analytics & Interpretation,Strong,,
-Regional Sales Head,Strategic Planning,Strong,,
-Regional Sales Head,Team Leadership,Strong,,
-Commercial Sales Team Lead,Market & Data Analytics Intelligence,Strong,,
-Commercial Sales Team Lead,Digital & AI Proficiency,Capable,,
-Commercial Sales Team Lead,Strategic Customer Development,Strong,,
-Commercial Sales Team Lead,Value Solution Design & Optimization,Strong,,
-Commercial Sales Team Lead,Strategic Relationship Management,Strong,,
-Commercial Sales Team Lead,Advanced Communication & Negotiation,Strong,,
-Commercial Sales Team Lead,AI Solution Development,Developing,,
-Commercial Sales Team Lead,Data Analytics & Interpretation,Strong,,
-Commercial Sales Team Lead,Strategic Planning,Strong,,
-Commercial Sales Team Lead,Team Leadership,Strong,,
-Product Line Manager,Market & Data Analytics Intelligence,Strong,,
-Product Line Manager,Digital & AI Proficiency,Strong,,
-Product Line Manager,Strategic Customer Development,Capable,,
-Product Line Manager,Value Solution Design & Optimization,Strong,,
-Product Line Manager,Strategic Relationship Management,Capable,,
-Product Line Manager,Advanced Communication & Negotiation,Capable,,
-Product Line Manager,AI Solution Development,Capable,,
-Product Line Manager,Data Analytics & Interpretation,Strong,,
-Product Line Manager,Strategic Planning,Strong,,
-Product Line Manager,Team Leadership,Capable,,
-Pricing/Volume Manager,Market & Data Analytics Intelligence,Strong,,
-Pricing/Volume Manager,Digital & AI Proficiency,Capable,,
-Pricing/Volume Manager,Strategic Customer Development,-,,
-Pricing/Volume Manager,Value Solution Design & Optimization,Capable,,
-Pricing/Volume Manager,Strategic Relationship Management,Developing,,
-Pricing/Volume Manager,Advanced Communication & Negotiation,Capable,,
-Pricing/Volume Manager,AI Solution Development,Capable,,
-Pricing/Volume Manager,Data Analytics & Interpretation,Strong,,
-Pricing/Volume Manager,Strategic Planning,Capable,,
-Pricing/Volume Manager,Team Leadership,-,,
-Marketing Manager,Market & Data Analytics Intelligence,Strong,,
-Marketing Manager,Digital & AI Proficiency,Strong,,
-Marketing Manager,Strategic Customer Development,Capable,,
-Marketing Manager,Value Solution Design & Optimization,Strong,,
-Marketing Manager,Strategic Relationship Management,Capable,,
-Marketing Manager,Advanced Communication & Negotiation,Strong,,
-Marketing Manager,AI Solution Development,Developing,,
-Marketing Manager,Data Analytics & Interpretation,Strong,,
-Marketing Manager,Strategic Planning,Strong,,
-Marketing Manager,Team Leadership,Capable,,
-MarCom,Market & Data Analytics Intelligence,Capable,,
-MarCom,Digital & AI Proficiency,Capable,,
-MarCom,Strategic Customer Development,-,,
-MarCom,Value Solution Design & Optimization,Capable,,
-MarCom,Strategic Relationship Management,-,,
-MarCom,Advanced Communication & Negotiation,Strong,,
-MarCom,AI Solution Development,Developing,,
-MarCom,Data Analytics & Interpretation,Developing,,
-MarCom,Strategic Planning,Developing,,
-MarCom,Team Leadership,-,,
-(Key) Account Manager,Market & Data Analytics Intelligence,Capable,,
-(Key) Account Manager,Digital & AI Proficiency,Developing,,
-(Key) Account Manager,Strategic Customer Development,Strong,,
-(Key) Account Manager,Value Solution Design & Optimization,Strong,,
-(Key) Account Manager,Strategic Relationship Management,Strong,,
-(Key) Account Manager,Advanced Communication & Negotiation,Strong,,
-(Key) Account Manager,AI Solution Development,Developing,,
-(Key) Account Manager,Data Analytics & Interpretation,Capable,,
-(Key) Account Manager,Strategic Planning,Capable,,
-(Key) Account Manager,Team Leadership,-,,
-Account Manager + AI Solution,Market & Data Analytics Intelligence,Strong,,
-Account Manager + AI Solution,Digital & AI Proficiency,Strong,,
-Account Manager + AI Solution,Strategic Customer Development,Strong,,
-Account Manager + AI Solution,Value Solution Design & Optimization,Strong,,
-Account Manager + AI Solution,Strategic Relationship Management,Strong,,
-Account Manager + AI Solution,Advanced Communication & Negotiation,Strong,,
-Account Manager + AI Solution,AI Solution Development,Strong,,
-Account Manager + AI Solution,Data Analytics & Interpretation,Strong,,
-Account Manager + AI Solution,Strategic Planning,Strong,,
-Account Manager + AI Solution,Team Leadership,-,,
-Inside Sales,Market & Data Analytics Intelligence,Capable,,
-Inside Sales,Digital & AI Proficiency,Capable,,
-Inside Sales,Strategic Customer Development,Capable,,
-Inside Sales,Value Solution Design & Optimization,Capable,,
-Inside Sales,Strategic Relationship Management,Capable,,
-Inside Sales,Advanced Communication & Negotiation,Capable,,
-Inside Sales,AI Solution Development,Developing,,
-Inside Sales,Data Analytics & Interpretation,Capable,,
-Inside Sales,Strategic Planning,-,,
-Inside Sales,Team Leadership,-,,
-Business Support,Market & Data Analytics Intelligence,Capable,,
-Business Support,Digital & AI Proficiency,Capable,,
-Business Support,Strategic Customer Development,-,,
-Business Support,Value Solution Design & Optimization,-,,
-Business Support,Strategic Relationship Management,-,,
-Business Support,Advanced Communication & Negotiation,Developing,,
-Business Support,AI Solution Development,Developing,,
-Business Support,Data Analytics & Interpretation,Capable,,
-Business Support,Strategic Planning,-,,
-Business Support,Team Leadership,-,,
+role,competency,expected
+Regional Sales Head,Market & Data Analytics Intelligence,Strong
+Regional Sales Head,Digital & AI Proficiency,Capability
+Regional Sales Head,Strategic Customer Development,Strong
+Regional Sales Head,Value Solution Design & Optimization,Strong
+Regional Sales Head,Strategic Relationship Management,Strong
+Regional Sales Head,Advanced Communication & Negotiation,Strong
+Regional Sales Head,AI Solution Development,Developing
+Regional Sales Head,Data Analytics & Interpretation,Strong
+Regional Sales Head,Strategic Planning,Strong
+Regional Sales Head,Team Leadership,Strong
+Commercial Sales Team Lead,Market & Data Analytics Intelligence,Strong
+Commercial Sales Team Lead,Digital & AI Proficiency,Capability
+Commercial Sales Team Lead,Strategic Customer Development,Strong
+Commercial Sales Team Lead,Value Solution Design & Optimization,Strong
+Commercial Sales Team Lead,Strategic Relationship Management,Strong
+Commercial Sales Team Lead,Advanced Communication & Negotiation,Strong
+Commercial Sales Team Lead,AI Solution Development,Developing
+Commercial Sales Team Lead,Data Analytics & Interpretation,Strong
+Commercial Sales Team Lead,Strategic Planning,Strong
+Commercial Sales Team Lead,Team Leadership,Strong
+Product Line Manager,Market & Data Analytics Intelligence,Strong
+Product Line Manager,Digital & AI Proficiency,Strong
+Product Line Manager,Strategic Customer Development,Capability
+Product Line Manager,Value Solution Design & Optimization,Strong
+Product Line Manager,Strategic Relationship Management,Capability
+Product Line Manager,Advanced Communication & Negotiation,Capability
+Product Line Manager,AI Solution Development,Capability
+Product Line Manager,Data Analytics & Interpretation,Strong
+Product Line Manager,Strategic Planning,Strong
+Product Line Manager,Team Leadership,Capability
+Pricing/Volume Manager,Market & Data Analytics Intelligence,Strong
+Pricing/Volume Manager,Digital & AI Proficiency,Capability
+Pricing/Volume Manager,Strategic Customer Development,-
+Pricing/Volume Manager,Value Solution Design & Optimization,Capability
+Pricing/Volume Manager,Strategic Relationship Management,Developing
+Pricing/Volume Manager,Advanced Communication & Negotiation,Capability
+Pricing/Volume Manager,AI Solution Development,Capability
+Pricing/Volume Manager,Data Analytics & Interpretation,Strong
+Pricing/Volume Manager,Strategic Planning,Capability
+Pricing/Volume Manager,Team Leadership,-
+Marketing Manager,Market & Data Analytics Intelligence,Strong
+Marketing Manager,Digital & AI Proficiency,Strong
+Marketing Manager,Strategic Customer Development,Capability
+Marketing Manager,Value Solution Design & Optimization,Strong
+Marketing Manager,Strategic Relationship Management,Capability
+Marketing Manager,Advanced Communication & Negotiation,Strong
+Marketing Manager,AI Solution Development,Developing
+Marketing Manager,Data Analytics & Interpretation,Strong
+Marketing Manager,Strategic Planning,Strong
+Marketing Manager,Team Leadership,Capability
+MarCom,Market & Data Analytics Intelligence,Capability
+MarCom,Digital & AI Proficiency,Capability
+MarCom,Strategic Customer Development,-
+MarCom,Value Solution Design & Optimization,Capability
+MarCom,Strategic Relationship Management,-
+MarCom,Advanced Communication & Negotiation,Strong
+MarCom,AI Solution Development,Developing
+MarCom,Data Analytics & Interpretation,Developing
+MarCom,Strategic Planning,Developing
+MarCom,Team Leadership,-
+(Key) Account Manager,Market & Data Analytics Intelligence,Capability
+(Key) Account Manager,Digital & AI Proficiency,Developing
+(Key) Account Manager,Strategic Customer Development,Strong
+(Key) Account Manager,Value Solution Design & Optimization,Strong
+(Key) Account Manager,Strategic Relationship Management,Strong
+(Key) Account Manager,Advanced Communication & Negotiation,Strong
+(Key) Account Manager,AI Solution Development,Developing
+(Key) Account Manager,Data Analytics & Interpretation,Capability
+(Key) Account Manager,Strategic Planning,Capability
+(Key) Account Manager,Team Leadership,-
+Account Manager + AI Solution,Market & Data Analytics Intelligence,Strong
+Account Manager + AI Solution,Digital & AI Proficiency,Strong
+Account Manager + AI Solution,Strategic Customer Development,Strong
+Account Manager + AI Solution,Value Solution Design & Optimization,Strong
+Account Manager + AI Solution,Strategic Relationship Management,Strong
+Account Manager + AI Solution,Advanced Communication & Negotiation,Strong
+Account Manager + AI Solution,AI Solution Development,Strong
+Account Manager + AI Solution,Data Analytics & Interpretation,Strong
+Account Manager + AI Solution,Strategic Planning,Strong
+Account Manager + AI Solution,Team Leadership,-
+Inside Sales,Market & Data Analytics Intelligence,Capability
+Inside Sales,Digital & AI Proficiency,Capability
+Inside Sales,Strategic Customer Development,Capability
+Inside Sales,Value Solution Design & Optimization,Capability
+Inside Sales,Strategic Relationship Management,Capability
+Inside Sales,Advanced Communication & Negotiation,Capability
+Inside Sales,AI Solution Development,Developing
+Inside Sales,Data Analytics & Interpretation,Capability
+Inside Sales,Strategic Planning,-
+Inside Sales,Team Leadership,-
+Business Support,Market & Data Analytics Intelligence,Capability
+Business Support,Digital & AI Proficiency,Capability
+Business Support,Strategic Customer Development,-
+Business Support,Value Solution Design & Optimization,-
+Business Support,Strategic Relationship Management,-
+Business Support,Advanced Communication & Negotiation,Developing
+Business Support,AI Solution Development,Developing
+Business Support,Data Analytics & Interpretation,Capability
+Business Support,Strategic Planning,-
+Business Support,Team Leadership,-
