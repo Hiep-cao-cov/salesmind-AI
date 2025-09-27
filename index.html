@@ -6,26 +6,18 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://kit.fontawesome.com/a2d9d6ef5c.js" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <style>
-    body { font-family: 'Inter', sans-serif; background:#f5f7fa; }
-    .sidebar {
-      height: 100vh;
-      background: linear-gradient(180deg, #667eea, #764ba2);
-      color: #fff; padding: 20px;
-    }
-    .sidebar h3 { font-weight:700; margin-bottom:40px; }
-    .sidebar a { display:block; padding:12px; color:#fff; text-decoration:none; margin-bottom:8px; border-radius:6px; }
+    body { font-family: Inter, sans-serif; background:#f5f7fa; }
+    .sidebar { height:100vh; background:linear-gradient(180deg,#667eea,#764ba2); color:#fff; padding:20px; }
+    .sidebar h3 { font-weight:700; margin-bottom:30px; }
+    .sidebar a { display:block; padding:10px; color:#fff; text-decoration:none; margin-bottom:6px; border-radius:6px; }
     .sidebar a:hover, .sidebar a.active { background: rgba(255,255,255,0.2); }
     .main-panel { background:#fff; padding:20px; height:100vh; overflow-y:auto; }
-    .goal-card {
-      background: linear-gradient(135deg,#4facfe,#00f2fe);
-      color:#fff; padding:20px; border-radius:10px;
-      margin-bottom:15px; box-shadow:0 4px 12px rgba(0,0,0,0.1);
-      cursor:pointer; transition:transform 0.1s ease;
-    }
+    .goal-card { background:linear-gradient(135deg,#4facfe,#00f2fe); color:#fff; padding:18px; border-radius:10px;
+                 margin-bottom:12px; box-shadow:0 4px 12px rgba(0,0,0,0.1); cursor:pointer; transition:transform .1s ease; }
     .goal-card:hover { transform: scale(1.02); }
     .detail-panel { background:#fdfdfd; padding:20px; height:100vh; overflow-y:auto; border-left:1px solid #ddd; }
-    .profile-card { text-align:center; margin-bottom:20px; }
     .badge-strong { background:#28a745; }
     .badge-capability { background:#0d6efd; }
     .badge-developing { background:#ffc107; color:#000; }
@@ -44,7 +36,7 @@
       <a href="#"><i class="fas fa-users"></i> Roles</a>
       <a href="#"><i class="fas fa-chart-line"></i> Reports</a>
       <a href="#"><i class="fas fa-cog"></i> Settings</a>
-      <button class="btn btn-light btn-sm mt-3" onclick="initDataFromFolder()">
+      <button class="btn btn-light btn-sm mt-3" onclick="loadAllData()">
         <i class="fas fa-database"></i> Load Data
       </button>
     </div>
@@ -68,15 +60,11 @@
         <h5 id="profileName">Select a user</h5>
         <p id="profileRole" class="text-muted"></p>
       </div>
-
       <h6>Overall Progress</h6>
       <canvas id="progressCircle" height="150"></canvas>
-
       <h6 class="mt-4">Competency Radar</h6>
       <canvas id="radarChart" height="200"></canvas>
-
       <div id="ratingsTable" class="mt-3"></div>
-
       <h6 class="mt-4">Development Plan</h6>
       <ul id="taskList" class="list-group"></ul>
     </div>
@@ -87,79 +75,82 @@
 let people=[], ratings=[], competencies={}, roles=[], details=[];
 let progressChart, radarChart;
 
-// --- Load CSVs from /data/ folder ---
-function initDataFromFolder(){
-  loadCSV("data/people.csv", rows=>{
-    people = rows.slice(1).map(r=>({
-      id: r[0].trim(),
-      name: r[1].trim(),
-      role: r[2].trim(),
-      score: parseInt(r[3])
+/* ===== CSV Loader (PapaParse) ===== */
+function parseCSV(path, cb){
+  Papa.parse(path, {
+    download: true,
+    header: true,
+    skipEmptyLines: true,
+    complete: (res) => cb(res.data),
+    error: (err) => console.error("Error loading", path, err)
+  });
+}
+
+/* ===== Load all data ===== */
+function loadAllData(){
+  parseCSV("data/people.csv", rows=>{
+    people = rows.map(r=>({
+      person_id: String(r["person_id"]).trim(),
+      name: String(r["name"]).trim(),
+      role: String(r["role/job"]).trim(),
+      score: parseInt(r["overall_score"])
     }));
     populateUserSelect();
+    console.log("People:", people);
   });
 
-  loadCSV("data/ratings.csv", rows=>{
-    ratings = rows.slice(1).map(r=>({
-      pid: r[1].trim(),
-      competency: r[2].trim(),
-      rating: r[3].trim()
+  parseCSV("data/ratings.csv", rows=>{
+    ratings = rows.map(r=>({
+      person_id: String(r["person_id"]).trim(),
+      competency: String(r["competency"]).trim(),
+      rating: String(r["rating"]).trim()
     }));
-    console.log("Loaded ratings:", ratings);
+    console.log("Ratings:", ratings);
   });
 
-  loadCSV("data/competencies.csv", rows=>{
-    rows.slice(1).forEach(r=>{
-      competencies[r[0].trim()] = {
-        Developing: r[1].trim(),
-        Capability: r[2].trim(),
-        Strong: r[3].trim()
+  parseCSV("data/competencies.csv", rows=>{
+    rows.forEach(r=>{
+      competencies[r["competency"].trim()] = {
+        Developing: r["Developing"].trim(),
+        Capability: r["Capability"].trim(),
+        Strong: r["Strong"].trim()
       };
     });
   });
 
-  loadCSV("data/role_profiles.csv", rows=>{
-    roles = rows.slice(1).map(r=>({
-      role: r[0].trim(),
-      competency: r[1].trim(),
-      expected: r[2].trim()
+  parseCSV("data/role_profiles.csv", rows=>{
+    roles = rows.map(r=>({
+      role: String(r["role"]).trim(),
+      competency: String(r["competency"]).trim(),
+      expected: String(r["expected"]).trim()
     }));
   });
 
-  loadCSV("data/rating_details.csv", rows=>{
-    details = rows.slice(1).map(r=>({
-      pid: r[1].trim(),
-      competency: r[2].trim(),
-      rating: r[3].trim(),
-      detail: r[4]?.trim()
+  parseCSV("data/rating_details.csv", rows=>{
+    details = rows.map(r=>({
+      person_id: String(r["person_id"]).trim(),
+      competency: String(r["competency"]).trim(),
+      rating: String(r["rating"]).trim(),
+      detail: r["detail"] ? r["detail"].trim() : ""
     }));
   });
 }
 
-// --- Helper: Fetch CSV ---
-function loadCSV(path, cb){
-  fetch(path).then(r=>r.text()).then(text=>{
-    const rows = text.trim().split("\n").map(r=>r.split(","));
-    cb(rows);
-  }).catch(err=>console.error("Error loading", path, err));
-}
-
-// --- Populate User Dropdown ---
+/* ===== UI ===== */
 function populateUserSelect(){
   const select=document.getElementById("userSelect");
   select.innerHTML='<option value="">-- Choose a user --</option>';
   people.forEach(p=>{
-    select.innerHTML+=`<option value="${p.id}">${p.name} – ${p.role}</option>`;
+    select.innerHTML+=`<option value="${p.person_id}">${p.name} – ${p.role}</option>`;
   });
 }
 
-// --- Render All Users ---
 function renderAllCards(){
   const container=document.getElementById("cardsContainer");
   container.innerHTML="";
   people.forEach(p=>{
     container.innerHTML+=`
-      <div class="goal-card" onclick="showDetails('${p.id}')">
+      <div class="goal-card" onclick="showDetails('${p.person_id}')">
         <h5>${p.name} – ${p.role}</h5>
         <p>Overall Score: <strong>${p.score}%</strong></p>
         <small>Click to view details</small>
@@ -167,16 +158,15 @@ function renderAllCards(){
   });
 }
 
-// --- Render One User ---
 function renderSingleCard(){
   const select=document.getElementById("userSelect");
   const pid=select.value;
   const container=document.getElementById("cardsContainer");
   container.innerHTML="";
   if(pid){
-    const p=people.find(x=>x.id===pid);
+    const p=people.find(x=>x.person_id===pid);
     container.innerHTML=`
-      <div class="goal-card" onclick="showDetails('${p.id}')">
+      <div class="goal-card" onclick="showDetails('${p.person_id}')">
         <h5>${p.name} – ${p.role}</h5>
         <p>Overall Score: <strong>${p.score}%</strong></p>
         <small>Click to view details</small>
@@ -184,12 +174,14 @@ function renderSingleCard(){
   }
 }
 
-// --- Show Details ---
 function showDetails(pid){
-  const person=people.find(p=>p.id===pid);
-  const actualRatings=ratings.filter(r=>r.pid===pid);
+  const person=people.find(p=>p.person_id===pid);
+  const actualRatings=ratings.filter(r=>r.person_id===pid);
   const expectedRatings=roles.filter(r=>r.role===person.role);
-  const userDetails=details.filter(d=>d.pid===pid);
+  const userDetails=details.filter(d=>d.person_id===pid);
+
+  console.log("Showing details for", person.name);
+  console.log("Actual:", actualRatings);
 
   document.getElementById("profileName").innerText=person.name;
   document.getElementById("profileRole").innerText=person.role;
@@ -202,7 +194,7 @@ function showDetails(pid){
     options:{cutout:"70%",plugins:{legend:{display:false}}}
   });
 
-  // Radar chart (align labels from both actual + expected)
+  // Radar chart
   const mapping={"Developing":1,"Capability":2,"Strong":3};
   let labels=[...new Set([...actualRatings.map(r=>r.competency), ...expectedRatings.map(r=>r.competency)])];
 
@@ -225,7 +217,7 @@ function showDetails(pid){
     options:{scales:{r:{suggestedMin:0,suggestedMax:3,ticks:{stepSize:1,callback:(v)=>['','Dev','Cap','Strong'][v]}}}}
   });
 
-  // Ratings table with badges
+  // Ratings table
   const badgeClass = r=>{
     if(r==="Strong") return "badge-strong";
     if(r==="Capability") return "badge-capability";
