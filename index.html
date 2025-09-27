@@ -26,7 +26,6 @@
     .goal-card:hover { transform: scale(1.02); }
     .detail-panel { background:#fdfdfd; padding:20px; height:100vh; overflow-y:auto; border-left:1px solid #ddd; }
     .profile-card { text-align:center; margin-bottom:20px; }
-    .task-done { text-decoration:line-through; color:#888; }
     .badge-strong { background:#28a745; }
     .badge-capability { background:#0d6efd; }
     .badge-developing { background:#ffc107; color:#000; }
@@ -53,6 +52,13 @@
     <!-- Main Panel -->
     <div class="col-6 main-panel">
       <h4>My Assessments</h4>
+      <button class="btn btn-primary btn-sm mb-3" onclick="renderAllCards()">Show All Users</button>
+      <div class="mb-3">
+        <label class="form-label">Select User</label>
+        <select id="userSelect" class="form-select form-select-sm" onchange="renderSingleCard()">
+          <option value="">-- Choose a user --</option>
+        </select>
+      </div>
       <div id="cardsContainer"></div>
     </div>
 
@@ -84,22 +90,49 @@ let progressChart, radarChart;
 // --- Load CSVs from /data/ folder ---
 function initDataFromFolder(){
   loadCSV("data/people.csv", rows=>{
-    people = rows.slice(1).map(r=>({id:r[0],name:r[1],role:r[2],score:parseInt(r[3])}));
-    renderCards();
+    people = rows.slice(1).map(r=>({
+      id: r[0].trim(),
+      name: r[1].trim(),
+      role: r[2].trim(),
+      score: parseInt(r[3])
+    }));
+    populateUserSelect();
   });
+
   loadCSV("data/ratings.csv", rows=>{
-    ratings = rows.slice(1).map(r=>({pid:r[1],competency:r[2],rating:r[3]}));
+    ratings = rows.slice(1).map(r=>({
+      pid: r[1].trim(),
+      competency: r[2].trim(),
+      rating: r[3].trim()
+    }));
+    console.log("Loaded ratings:", ratings);
   });
+
   loadCSV("data/competencies.csv", rows=>{
     rows.slice(1).forEach(r=>{
-      competencies[r[0]]={Developing:r[1],Capability:r[2],Strong:r[3]};
+      competencies[r[0].trim()] = {
+        Developing: r[1].trim(),
+        Capability: r[2].trim(),
+        Strong: r[3].trim()
+      };
     });
   });
+
   loadCSV("data/role_profiles.csv", rows=>{
-    roles = rows.slice(1).map(r=>({role:r[0],competency:r[1],expected:r[2]}));
+    roles = rows.slice(1).map(r=>({
+      role: r[0].trim(),
+      competency: r[1].trim(),
+      expected: r[2].trim()
+    }));
   });
+
   loadCSV("data/rating_details.csv", rows=>{
-    details = rows.slice(1).map(r=>({pid:r[1],competency:r[2],rating:r[3],detail:r[4]}));
+    details = rows.slice(1).map(r=>({
+      pid: r[1].trim(),
+      competency: r[2].trim(),
+      rating: r[3].trim(),
+      detail: r[4]?.trim()
+    }));
   });
 }
 
@@ -111,8 +144,17 @@ function loadCSV(path, cb){
   }).catch(err=>console.error("Error loading", path, err));
 }
 
-// --- Render Cards in Main Panel ---
-function renderCards(){
+// --- Populate User Dropdown ---
+function populateUserSelect(){
+  const select=document.getElementById("userSelect");
+  select.innerHTML='<option value="">-- Choose a user --</option>';
+  people.forEach(p=>{
+    select.innerHTML+=`<option value="${p.id}">${p.name} – ${p.role}</option>`;
+  });
+}
+
+// --- Render All Users ---
+function renderAllCards(){
   const container=document.getElementById("cardsContainer");
   container.innerHTML="";
   people.forEach(p=>{
@@ -125,7 +167,24 @@ function renderCards(){
   });
 }
 
-// --- Show Details in Right Panel ---
+// --- Render One User ---
+function renderSingleCard(){
+  const select=document.getElementById("userSelect");
+  const pid=select.value;
+  const container=document.getElementById("cardsContainer");
+  container.innerHTML="";
+  if(pid){
+    const p=people.find(x=>x.id===pid);
+    container.innerHTML=`
+      <div class="goal-card" onclick="showDetails('${p.id}')">
+        <h5>${p.name} – ${p.role}</h5>
+        <p>Overall Score: <strong>${p.score}%</strong></p>
+        <small>Click to view details</small>
+      </div>`;
+  }
+}
+
+// --- Show Details ---
 function showDetails(pid){
   const person=people.find(p=>p.id===pid);
   const actualRatings=ratings.filter(r=>r.pid===pid);
@@ -143,7 +202,7 @@ function showDetails(pid){
     options:{cutout:"70%",plugins:{legend:{display:false}}}
   });
 
-  // Radar chart (fix alignment)
+  // Radar chart (align labels from both actual + expected)
   const mapping={"Developing":1,"Capability":2,"Strong":3};
   let labels=[...new Set([...actualRatings.map(r=>r.competency), ...expectedRatings.map(r=>r.competency)])];
 
@@ -166,7 +225,7 @@ function showDetails(pid){
     options:{scales:{r:{suggestedMin:0,suggestedMax:3,ticks:{stepSize:1,callback:(v)=>['','Dev','Cap','Strong'][v]}}}}
   });
 
-  // Ratings table with colored badges
+  // Ratings table with badges
   const badgeClass = r=>{
     if(r==="Strong") return "badge-strong";
     if(r==="Capability") return "badge-capability";
@@ -187,7 +246,7 @@ function showDetails(pid){
   ratingsHtml+="</tbody></table>";
   document.getElementById("ratingsTable").innerHTML=ratingsHtml;
 
-  // Tasks
+  // Development plan
   const taskList=document.getElementById("taskList");
   taskList.innerHTML="";
   userDetails.forEach(d=>{
