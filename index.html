@@ -16,8 +16,9 @@
     .sidebar { height: 100vh; background: linear-gradient(180deg,#667eea,#764ba2); color: #fff; padding: 20px; }
     .sidebar h3 { font-weight:700; margin-bottom:24px; }
     .sidebar a { display:block; padding:10px; color:#fff; text-decoration:none; margin-bottom:6px; border-radius:6px; cursor:pointer; }
-    .sidebar a:hover, .sidebar a.active { background: rgba(255,255,255,0.2); }
+    .sidebar a:hover, .sidebar a.active { background: rgba(255,255,255,0.3); }
     .sidebar .submenu { margin-left:15px; font-size: 0.9em; }
+    .sidebar .disabled { cursor: default; opacity: 0.6; }
     .main-panel { background:#fff; padding:20px; height:100vh; overflow-y:auto; }
     .goal-card { background: linear-gradient(135deg,#4facfe,#00f2fe); color:#fff; padding:18px; border-radius:10px;
                  margin-bottom:12px; box-shadow:0 4px 12px rgba(0,0,0,0.1); cursor:pointer; transition:transform 0.1s ease; }
@@ -27,31 +28,30 @@
     .badge-capability { background:#0d6efd; }
     .badge-developing { background:#ffc107; color:#000; }
     .badge-none { background:#6c757d; }
+    .competency-btn { margin-bottom:8px; border:none; border-radius:8px; padding:12px; font-weight:600; text-align:left; }
+    .competency-btn:hover { transform:scale(1.02); box-shadow:0 4px 10px rgba(0,0,0,0.15); }
   </style>
 </head>
-<body>
+<body onload="loadAllData()">
 <div class="container-fluid">
   <div class="row">
     <!-- Sidebar -->
     <div class="col-12 col-md-2 sidebar">
       <h3><i class="fas fa-user-graduate"></i> SalesMind</h3>
-      <a id="navDashboard" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+      <a id="navDashboard" class="disabled active"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
       <div class="submenu">
         <a id="navAll"><i class="fas fa-users"></i> Show All Users</a>
         <a id="navSingle"><i class="fas fa-user"></i> Select User</a>
       </div>
-      <a href="#"><i class="fas fa-tasks"></i> Assessments</a>
-      <a href="#"><i class="fas fa-brain"></i> Competencies</a>
-      <a href="#"><i class="fas fa-users"></i> Roles</a>
-      <a href="#"><i class="fas fa-chart-line"></i> Reports</a>
-      <a href="#"><i class="fas fa-cog"></i> Settings</a>
-      <button class="btn btn-light btn-sm mt-3" onclick="loadAllData()">
-        <i class="fas fa-database"></i> Load Data
-      </button>
+      <a id="navAssess"><i class="fas fa-tasks"></i> Assessments</a>
+      <a id="navCompetencies"><i class="fas fa-brain"></i> Competencies</a>
+      <a id="navRoles"><i class="fas fa-users"></i> Roles</a>
+      <a id="navReports"><i class="fas fa-chart-line"></i> Reports</a>
+      <a id="navSettings"><i class="fas fa-cog"></i> Settings</a>
     </div>
 
     <!-- Main Panel -->
-    <div class="col-12 col-md-6 main-panel">
+    <div class="col-12 col-md-4 main-panel" id="mainPanel">
       <h4 id="mainTitle">My Assessments</h4>
       <div id="userSelectBox" class="mb-3" style="display:none;">
         <label class="form-label">Select User</label>
@@ -63,41 +63,45 @@
     </div>
 
     <!-- Detail Panel -->
-    <div class="col-12 col-md-4 detail-panel">
+    <div class="col-12 col-md-6 detail-panel">
       <div class="mb-2">
         <h5 id="profileName">Select a user</h5>
         <p id="profileRole" class="text-muted mb-0"></p>
       </div>
-      <!-- Ratings table first -->
       <div id="ratingsTable" class="mt-3"></div>
-      <!-- Radar chart below ratings -->
-      <h6 class="mt-4">Competency Radar</h6>
+      <h6 id="radarLabel" class="mt-4">Competency Radar</h6>
       <canvas id="radarChart" height="200"></canvas>
-      <!-- Development plan -->
-      <h6 class="mt-4">Development Plan</h6>
-      <ul id="taskList" class="list-group"></ul>
     </div>
   </div>
 </div>
 
 <script>
 /* === Global Data === */
-let people=[], ratings=[], competencies={}, roles=[], details=[];
+let people=[], ratings=[], competencies=[], roles=[], details=[];
 let radarChart;
-let currentMode="all"; // default mode
+let currentMode="all";
+let selectedLevel="Developing";  
+let selectedCompetency=null;
+
+/* === Utility: clear detail panel === */
+function clearDetailPanel(){
+  document.getElementById("profileName").innerText="";
+  document.getElementById("profileRole").innerText="";
+  document.getElementById("ratingsTable").innerHTML="";
+  document.getElementById("radarChart").style.display="none";
+  document.getElementById("radarLabel").style.display="none";
+  if(radarChart) radarChart.destroy();
+}
 
 /* === CSV Loader === */
 function parseCSV(path, cb){
   Papa.parse(path, {
-    download: true,
-    header: true,
-    skipEmptyLines: true,
+    download: true, header: true, skipEmptyLines: true,
     complete: (res) => cb(res.data),
     error: (err) => console.error("Error loading", path, err)
   });
 }
 
-/* === Load Data === */
 function loadAllData(){
   parseCSV("data/people.csv", rows=>{
     people = rows.map(r=>({
@@ -119,13 +123,12 @@ function loadAllData(){
   });
 
   parseCSV("data/competencies.csv", rows=>{
-    rows.forEach(r=>{
-      competencies[r["competency"].trim().toLowerCase()] = {
-        Developing: r["Developing"].trim(),
-        Capability: r["Capability"].trim(),
-        Strong: r["Strong"].trim()
-      };
-    });
+    competencies = rows.map(r=>({
+      competency: r["competency"].trim(),
+      level: r["level"].trim(),
+      item_id: r["item_id"].trim(),
+      item_text: r["item_text"].trim()
+    }));
   });
 
   parseCSV("data/role_profiles.csv", rows=>{
@@ -146,6 +149,18 @@ function loadAllData(){
   });
 }
 
+/* === Sidebar Active Highlight === */
+function setActive(navId){
+  document.querySelectorAll(".sidebar a").forEach(a=>{
+    if(!a.classList.contains("disabled")) a.classList.remove("active");
+  });
+  if(navId!=="navDashboard") document.getElementById(navId).classList.add("active");
+  if(navId==="navAll"||navId==="navSingle"){ 
+    document.getElementById("navDashboard").classList.add("active"); 
+  }
+  clearDetailPanel();
+}
+
 /* === UI Functions === */
 function populateUserSelect(){
   const select=document.getElementById("userSelect");
@@ -159,10 +174,10 @@ function renderMainPanel(){
   const container=document.getElementById("cardsContainer");
   const selectBox=document.getElementById("userSelectBox");
   container.innerHTML="";
+  selectBox.style.display="none";
 
   if(currentMode==="all"){
     document.getElementById("mainTitle").innerText="All Users";
-    selectBox.style.display="none";
     people.forEach(p=>{
       container.innerHTML+=`
         <div class="goal-card" onclick="showDetails('${p.person_id}')">
@@ -194,14 +209,97 @@ function renderSingleCard(){
 }
 
 /* === Sidebar Navigation === */
-document.getElementById("navAll").onclick=()=>{
-  currentMode="all";
-  renderMainPanel();
+document.getElementById("navAll").onclick=()=>{ setActive("navAll"); currentMode="all"; renderMainPanel(); };
+document.getElementById("navSingle").onclick=()=>{ setActive("navSingle"); currentMode="single"; renderMainPanel(); };
+
+document.getElementById("navReports").onclick=()=>{
+  setActive("navReports");
+  document.getElementById("mainTitle").innerText="Reports – Development Plans";
+  document.getElementById("userSelectBox").style.display="none";
+  const container=document.getElementById("cardsContainer");
+  container.innerHTML=`
+    <label class="form-label">Select User</label>
+    <select id="reportSelect" class="form-select form-select-sm" onchange="renderReport()">
+      <option value="">-- Choose a user --</option>
+      ${people.map(p=>`<option value="${p.person_id}">${p.name}</option>`).join("")}
+    </select>
+    <ul id="reportTaskList" class="list-group mt-3"></ul>
+  `;
 };
-document.getElementById("navSingle").onclick=()=>{
-  currentMode="single";
-  renderMainPanel();
+
+function renderReport(){
+  const pid=document.getElementById("reportSelect").value;
+  const taskList=document.getElementById("reportTaskList");
+  taskList.innerHTML="";
+  if(pid){
+    const userDetails=details.filter(d=>d.person_id===pid);
+    userDetails.forEach(d=>{
+      taskList.innerHTML+=`<li class="list-group-item"><i class="fas fa-check-circle text-success"></i> ${d.detail}</li>`;
+    });
+  }
+}
+
+// === Competencies view ===
+document.getElementById("navCompetencies").onclick=()=>{
+  setActive("navCompetencies");
+  document.getElementById("mainTitle").innerText="Competencies";
+  document.getElementById("userSelectBox").style.display="none";
+  const container=document.getElementById("cardsContainer");
+
+  let uniqueComps=[...new Set(competencies.map(c=>c.competency))];
+  let colors=[
+    "linear-gradient(135deg,#667eea,#764ba2)",
+    "linear-gradient(135deg,#ff9966,#ff5e62)",
+    "linear-gradient(135deg,#36d1dc,#5b86e5)",
+    "linear-gradient(135deg,#f7971e,#ffd200)",
+    "linear-gradient(135deg,#00b09b,#96c93d)"
+  ];
+
+  let btnHtml="";
+  uniqueComps.forEach((c,i)=>{
+    let style=`background:${colors[i % colors.length]};color:white;`;
+    btnHtml+=`<button class="competency-btn d-block w-100" style="${style}" onclick="selectCompetency('${c}')">${c}</button>`;
+  });
+
+  container.innerHTML=`
+    <div id="compButtons">${btnHtml}</div>
+    <div class="mt-3">
+      <label class="form-label">Select Level</label>
+      <select id="levelSelect" class="form-select form-select-sm" onchange="refreshCompetencyDetail()">
+        <option value="Developing" selected>Developing</option>
+        <option value="Capability">Capability</option>
+        <option value="Strong">Strong</option>
+      </select>
+    </div>
+  `;
 };
+
+function selectCompetency(comp){
+  selectedCompetency=comp;
+  selectedLevel=document.getElementById("levelSelect").value;
+  refreshCompetencyDetail();
+}
+
+function refreshCompetencyDetail(){
+  if(!selectedCompetency) return;
+  selectedLevel=document.getElementById("levelSelect").value;
+  const items=competencies.filter(c=>c.competency===selectedCompetency && c.level===selectedLevel);
+  const detailDiv=document.getElementById("ratingsTable");
+
+  document.getElementById("profileName").innerText="Competency Detail";
+  document.getElementById("profileRole").innerText=`${selectedCompetency} – ${selectedLevel}`;
+
+  if(items.length>0){
+    let html="<ul class='list-group mt-3'>";
+    items.forEach(it=>{
+      html+=`<li class="list-group-item">${it.item_text}</li>`;
+    });
+    html+="</ul>";
+    detailDiv.innerHTML=html;
+  } else {
+    detailDiv.innerHTML=`<p class="text-muted">No items found for this selection.</p>`;
+  }
+}
 
 /* === Helpers === */
 function badgeClass(r){
@@ -211,23 +309,21 @@ function badgeClass(r){
   return "badge-none";
 }
 
-/* === Show Details Panel === */
+/* === Show Details Panel for Users === */
 function showDetails(pid){
+  setActive("navAll"); 
   const person=people.find(p=>p.person_id===pid);
   const actualRatings=ratings.filter(r=>r.person_id===pid);
   const expectedRatings=roles.filter(r=>r.role===person.role);
-  const userDetails=details.filter(d=>d.person_id===pid);
 
   document.getElementById("profileName").innerText=person.name;
   document.getElementById("profileRole").innerText=person.role;
+  document.getElementById("radarChart").style.display="block";
+  document.getElementById("radarLabel").style.display="block";
 
-  // Ratings table
   let ratingsHtml = `<table class="table table-sm mt-3"><thead><tr><th>Competency</th><th>Actual</th><th>Expected</th></tr></thead><tbody>`;
   const mapping={"Developing":1,"Capability":2,"Strong":3};
-  let labels=[...new Set([
-    ...actualRatings.map(r=>r.competency),
-    ...expectedRatings.map(r=>r.competency)
-  ])];
+  let labels=[...new Set([...actualRatings.map(r=>r.competency), ...expectedRatings.map(r=>r.competency)])];
   labels.forEach(label=>{
     let actual = actualRatings.find(r=>r.competency===label.toLowerCase())?.rating || "None";
     let expected = expectedRatings.find(r=>r.competency===label.toLowerCase())?.expected || "None";
@@ -241,7 +337,6 @@ function showDetails(pid){
   ratingsHtml+="</tbody></table>";
   document.getElementById("ratingsTable").innerHTML=ratingsHtml;
 
-  // Radar chart
   let actualVals=labels.map(label=>{
     let r=actualRatings.find(ar=>ar.competency===label.toLowerCase());
     return r?mapping[r.rating]:0;
@@ -259,13 +354,6 @@ function showDetails(pid){
       {label:"Expected",data:expectedVals,fill:true,backgroundColor:"rgba(244,67,54,0.2)",borderColor:"#f44336"}
     ]},
     options:{scales:{r:{suggestedMin:0,suggestedMax:3,ticks:{stepSize:1,callback:(v)=>['','Dev','Cap','Strong'][v]}}}}
-  });
-
-  // Development plan
-  const taskList=document.getElementById("taskList");
-  taskList.innerHTML="";
-  userDetails.forEach(d=>{
-    taskList.innerHTML+=`<li class="list-group-item"><i class="fas fa-check-circle text-success"></i> ${d.detail}</li>`;
   });
 }
 </script>
